@@ -207,10 +207,12 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
     // // gst_rtsp_media_factory_set_shared(rtsp_source, TRUE);
 
     mounts = gst_rtsp_server_get_mount_points(server);
-    str = g_strdup_printf("( "
-    "filesrc location=\"%s\" ! qtdemux name=d "
-    "d. ! queue ! rtph264pay pt=96 name=pay0 "
-    "d. ! queue ! rtpmp4apay pt=97 name=pay1 " ")", "../Files/video_test_2.mp4");
+    //str = g_strdup_printf("( "
+    //"filesrc location=\"%s\" ! qtdemux name=d "
+    //"d. ! queue ! rtph264pay pt=96 name=pay0 "
+    //"d. ! queue ! rtpmp4apay pt=97 name=pay1 " ")", "../Files/video_test_2.mp4");
+     str = g_strdup_printf("( rtpbin name=rtpbin "
+        "filesrc location=../Files/video_test_2.mp4 ! decodebin ! videoconvert ! textoverlay name=overlay ! x264enc ! rtph264pay name=pay0 pt=96)");
     factory = gst_rtsp_media_factory_new();
     gst_rtsp_media_factory_set_launch(factory, str);
     g_signal_connect(factory, "media-configure", (GCallback)media_configure_cb,
