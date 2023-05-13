@@ -126,9 +126,14 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
         g_printerr("Failed to link elements\n");
         g_warning ("Failed to link elements!");
     }
-
+    // g_object_set(G_OBJECT(overlay), "draw", [](cairo_t *cr, int width, int height, gpointer data) {
+    //     // Draw overlay here
+    //     cairo_set_source_rgb(cr, 1, 1, 1);
+    //     cairo_rectangle(cr, 10, 10, 100, 50);
+    //     cairo_fill(cr);
+    // }, NULL, NULL);
     // g_object_set(G_OBJECT(overlay), "text", "Hello, world!", NULL);
-      // Set text and font properties
+    //   Set text and font properties
     g_object_set(G_OBJECT(overlay), "text", "Hello, world!", NULL);
     g_object_set(G_OBJECT(overlay), "font-desc", "Sans 24", NULL);
 
