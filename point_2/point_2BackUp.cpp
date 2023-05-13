@@ -1,6 +1,8 @@
 
 
 #include <gst/gst.h>
+#include <gstreamer-1.0/gst/gst.h>
+
 //#include <gst/rtsp-server/rtsp-server.h>
 #include <gst/video/video.h>
 
@@ -94,47 +96,38 @@ static GstElement *
 setup_gst_pipeline (CairoOverlayState * overlay_state)
 {
   GstElement *cairo_overlay;
-  GstElement *source, *adaptor1, *adaptor2;
-  GstElement* pipeline, * src, * overlay,*capsfilter,*videoconvert,* enc, * pay, * sink;
+  GstElement *source, *adaptor1, *adaptor2,*capsfilter,*videoconvert;	
+  GstElement* pipeline, * src, * overlay,* enc, * pay, * sink;
 
   /* Create elements */
     pipeline = gst_pipeline_new("mypipeline");
     src = gst_element_factory_make("videotestsrc", "mysrc");
-    overlay = gst_element_factory_make("textoverlay", "myoverlay");
-    // overlay = gst_element_factory_make ("cairooverlay", "overlay");
+    overlay = gst_element_factory_make ("cairooverlay", "overlay");
     capsfilter = gst_element_factory_make ("capsfilter", "capsfilter");
-    videoconvert = gst_element_factory_make ("videoconvert", "videoconvert");
+    videoconvert = gst_element_factory_make ("videoconvert", "videoconvert");    
     enc = gst_element_factory_make("x264enc", "myenc");
     pay = gst_element_factory_make("rtph264pay", "mypay");
     sink = gst_element_factory_make("udpsink", "mysink");
 
     /* Set properties */
-    g_object_set (G_OBJECT (capsfilter), "caps",
-                  gst_caps_from_string ("video/x-raw, format=RGB"),
-                  NULL);
-    /* Set properties */
     g_object_set(G_OBJECT(pay), "config-interval", 10, NULL);
     g_object_set(G_OBJECT(pay), "pt", 96, NULL);
+    g_object_set (G_OBJECT (capsfilter), "caps",
+                gst_caps_from_string ("video/x-raw, format=RGB"),
+                NULL);
 
     g_object_set(G_OBJECT(sink), "host", "127.0.0.1", NULL);
     g_object_set(G_OBJECT(sink), "port", 5000, NULL);
 
     /* Add elements to pipeline */
-    gst_bin_add_many(GST_BIN(pipeline), src, overlay, capsfilter, videoconvert, enc, pay, sink, NULL);
+    gst_bin_add_many(GST_BIN(pipeline), src, overlay,capsfilter,videoconvert, enc, pay, sink, NULL);
 
-    if (!gst_element_link_many(src, overlay, capsfilter, videoconvert,enc,pay, sink, NULL)) {
+    if (!gst_element_link_many(src, overlay,capsfilter,videoconvert,enc,pay, sink, NULL)) {
         g_printerr("Failed to link elements\n");
         g_warning ("Failed to link elements!");
     }
 
     // g_object_set(G_OBJECT(overlay), "text", "Hello, world!", NULL);
-      // Set text and font properties
-    g_object_set(G_OBJECT(overlay), "text", "Hello, world!", NULL);
-    g_object_set(G_OBJECT(overlay), "font-desc", "Sans 24", NULL);
-
-    // Set alignment and padding properties to move the text to the top-left corner
-    g_object_set(G_OBJECT(overlay), "valignment", 0, "halignment", 0, "xpad", 50, "ypad", 50, NULL);
-
   return pipeline;
 }
 int main(int argc, char* argv[]) {
