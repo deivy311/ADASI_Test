@@ -179,7 +179,7 @@ static GstElement *
 setup_gst_pipeline (CairoOverlayState * overlay_state)
 {
   GstElement *cairo_overlay;
-  GstElement *source, *adaptor1, *adaptor2;
+  GstElement *adaptor1, *adaptor2;
   GstElement* pipeline, * src, * overlay,*capsfilter,*videoconvert,* enc, * pay, * sink;
   gchar* str;
   GstRTSPMediaFactory* factory;
@@ -190,6 +190,7 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
   /* Create elements */
     pipeline = gst_pipeline_new("mypipeline");
     src = gst_element_factory_make("videotestsrc", "mysrc");
+    // src = gst_element_factory_make("filesrc", "file-source");
     overlay = gst_element_factory_make("textoverlay", "myoverlay");
     // overlay = gst_element_factory_make ("cairooverlay", "overlay");
     capsfilter = gst_element_factory_make ("capsfilter", "capsfilter");
@@ -207,14 +208,15 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
     // // gst_rtsp_media_factory_set_shared(rtsp_source, TRUE);
 
     mounts = gst_rtsp_server_get_mount_points(server);
-    //str = g_strdup_printf("( "
-    //"filesrc location=\"%s\" ! qtdemux name=d "
-    //"d. ! queue ! rtph264pay pt=96 name=pay0 "
-    //"d. ! queue ! rtpmp4apay pt=97 name=pay1 " ")", "../Files/video_test_2.mp4");
-     str = g_strdup_printf("( rtpbin name=rtpbin "
-        "filesrc location=../Files/video_test_2.mp4 ! decodebin ! videoconvert ! textoverlay name=overlay ! x264enc ! rtph264pay name=pay0 pt=96)");
+    str = g_strdup_printf("( "
+    "filesrc location=\"%s\" ! qtdemux name=d "
+    "d. ! queue ! rtph264pay pt=96 name=pay0 "
+    "d. ! queue ! rtpmp4apay pt=97 name=pay1 " ")", "../Files/video_test_2.mp4");
+    //str = g_strdup_printf("( rtpbin name=rtpbin "
+    //    "filesrc location=../Files/video_test_2.mp4 ! decodebin ! videoconvert ! textoverlay name=overlay ! x264enc ! rtph264pay name=pay0 pt=96)");
     factory = gst_rtsp_media_factory_new();
     gst_rtsp_media_factory_set_launch(factory, str);
+    // gst_rtsp_media_factory_set_shared(factory, TRUE);
     g_signal_connect(factory, "media-configure", (GCallback)media_configure_cb,
     factory);
     g_free(str);
@@ -228,6 +230,8 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
                   gst_caps_from_string ("video/x-raw, format=RGB"),
                   NULL);
     /* Set properties */
+    // g_object_set(G_OBJECT(src), "location", "../Files/video_test_2.mp4", NULL);
+
     g_object_set(G_OBJECT(pay), "config-interval", 10, NULL);
     g_object_set(G_OBJECT(pay), "pt", 96, NULL);
 
