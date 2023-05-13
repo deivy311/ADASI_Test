@@ -1,19 +1,14 @@
-#include <gst/gst.h>
-#include <cairo.h>
-#include <cairo-gobject.h>
 
-static gboolean feed_overlay(GstAppSrc *src, guint size, gpointer user_data) {
-    gchar *text = "Hello, world!";
-    GstBuffer *buffer = gst_buffer_new_wrapped_full(0, text, strlen(text), 0, strlen(text), NULL, NULL);
-    return gst_app_src_push_buffer(src, buffer) == GST_FLOW_OK;
-}
+
+#include <gst/gst.h>
+//#include <gst/rtsp-server/rtsp-server.h>
 
 int main(int argc, char* argv[]) {
-    GstElement *pipeline, *src, *overlay, *enc, *pay, *sink, *appsrc;
-    GstCaps *caps;
-    GstBus *bus;
-    GstMessage *msg;
-    GMainLoop *loop;
+    GstElement* pipeline, * src,*cairo_overlay, * enc, * pay, * sink;
+    GstCaps* caps;
+    GstBus* bus;
+    GstMessage* msg;
+    GMainLoop* loop;
 
     /* Initialize GStreamer */
     gst_init(&argc, &argv);
@@ -22,45 +17,37 @@ int main(int argc, char* argv[]) {
     /* Create elements */
     pipeline = gst_pipeline_new("mypipeline");
     src = gst_element_factory_make("videotestsrc", "mysrc");
-    overlay = gst_element_factory_make("textoverlay", "myoverlay");
+    cairo_overlay = gst_element_factory_make ("cairooverlay", "overlay");
     enc = gst_element_factory_make("x264enc", "myenc");
     pay = gst_element_factory_make("rtph264pay", "mypay");
     sink = gst_element_factory_make("udpsink", "mysink");
-    appsrc = gst_element_factory_make("appsrc", "myappsrc");
 
     /* Set properties */
     g_object_set(G_OBJECT(pay), "config-interval", 10, NULL);
     g_object_set(G_OBJECT(pay), "pt", 96, NULL);
+    //g_object_set(G_OBJECT(sink), "protocols", GST_RTSP_LOWER_TRANS_TCP, NULL);
+
     g_object_set(G_OBJECT(sink), "host", "127.0.0.1", NULL);
     g_object_set(G_OBJECT(sink), "port", 5000, NULL);
 
     /* Add elements to pipeline */
-    gst_bin_add_many(GST_BIN(pipeline), src, overlay, enc, pay, sink, appsrc, NULL);
+    gst_bin_add_many(GST_BIN(pipeline), src, enc, pay, sink, NULL);
 
     /* Link elements */
     if (!gst_element_link_many(src, enc, pay, sink, NULL)) {
-        g_printerr("Failed to link video elements\n");
+        g_printerr("Failed to link elements\n");
         return -1;
     }
-    if (!gst_element_link_many(appsrc, overlay, enc, pay, sink, NULL)) {
-        g_printerr("Failed to link overlay elements\n");
-        return -1;
-    }
-
-    /* Set up the appsrc */
-    g_object_set(G_OBJECT(appsrc), "format", GST_FORMAT_TIME, NULL);
-    g_object_set(G_OBJECT(appsrc), "is-live", TRUE, NULL);
-    g_object_set(G_OBJECT(appsrc), "emit-signals", TRUE, NULL);
-    g_signal_connect(appsrc, "need-data", G_CALLBACK(feed_overlay), NULL);
 
     /* Start playing */
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
     g_print("Running...\n");
+    int messageType = GST_MESSAGE_ERROR | GST_MESSAGE_EOS;
 
     /* Wait until error or EOS */
     bus = gst_element_get_bus(pipeline);
     msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE,
-        GST_MESSAGE_ERROR | GST_MESSAGE_EOS);
+        (GstMessageType)messageType);
 
     /* Free resources */
     if (msg != NULL) {
