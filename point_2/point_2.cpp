@@ -100,14 +100,19 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
   /* Create elements */
     pipeline = gst_pipeline_new("mypipeline");
     src = gst_element_factory_make("videotestsrc", "mysrc");
-    overlay = gst_element_factory_make("textoverlay", "myoverlay");
-    // overlay = gst_element_factory_make ("cairooverlay", "overlay");
+    // overlay = gst_element_factory_make("textoverlay", "myoverlay");
+    overlay = gst_element_factory_make ("cairooverlay", "overlay");
     capsfilter = gst_element_factory_make ("capsfilter", "capsfilter");
     videoconvert = gst_element_factory_make ("videoconvert", "videoconvert");
     enc = gst_element_factory_make("x264enc", "myenc");
     pay = gst_element_factory_make("rtph264pay", "mypay");
     sink = gst_element_factory_make("udpsink", "mysink");
-
+    g_object_set(G_OBJECT(overlay), "draw", [](cairo_t *cr, int width, int height, gpointer data) {
+        // Draw overlay here
+        cairo_set_source_rgb(cr, 1, 1, 1);
+        cairo_rectangle(cr, 10, 10, 100, 50);
+        cairo_fill(cr);
+    }, NULL, NULL);
     /* Set properties */
     g_object_set (G_OBJECT (capsfilter), "caps",
                   gst_caps_from_string ("video/x-raw, format=RGB"),
@@ -126,19 +131,14 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
         g_printerr("Failed to link elements\n");
         g_warning ("Failed to link elements!");
     }
-    // g_object_set(G_OBJECT(overlay), "draw", [](cairo_t *cr, int width, int height, gpointer data) {
-    //     // Draw overlay here
-    //     cairo_set_source_rgb(cr, 1, 1, 1);
-    //     cairo_rectangle(cr, 10, 10, 100, 50);
-    //     cairo_fill(cr);
-    // }, NULL, NULL);
-    // g_object_set(G_OBJECT(overlay), "text", "Hello, world!", NULL);
-    //   Set text and font properties
-    g_object_set(G_OBJECT(overlay), "text", "Hello, world!", NULL);
-    g_object_set(G_OBJECT(overlay), "font-desc", "Sans 24", NULL);
 
-    // Set alignment and padding properties to move the text to the top-left corner
-    g_object_set(G_OBJECT(overlay), "valignment", 0, "halignment", 0, "xpad", 50, "ypad", 50, NULL);
+    // g_object_set(G_OBJECT(overlay), "text", "Hello, world!", NULL);
+    // //   Set text and font properties
+    // g_object_set(G_OBJECT(overlay), "text", "Hello, world!", NULL);
+    // g_object_set(G_OBJECT(overlay), "font-desc", "Sans 24", NULL);
+
+    // // Set alignment and padding properties to move the text to the top-left corner
+    // g_object_set(G_OBJECT(overlay), "valignment", 0, "halignment", 0, "xpad", 50, "ypad", 50, NULL);
 
   return pipeline;
 }
