@@ -45,6 +45,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/deivy311/Documents/GitHub/ADASI_Test/build/point_1/cmake_install.cmake")
+  include("/home/deivy311/Documents/GitHub/ADASI_Test/build/point_2/cmake_install.cmake")
   include("/home/deivy311/Documents/GitHub/ADASI_Test/build/point_4/cmake_install.cmake")
 
 endif()

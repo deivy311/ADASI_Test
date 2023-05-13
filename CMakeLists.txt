@@ -12,6 +12,7 @@ file(COPY "Files/" DESTINATION "${CMAKE_BINARY_DIR}/Files")
 file(COPY "Files/" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Files")
 
 add_subdirectory(point_1)
+add_subdirectory(point_2)
 add_subdirectory(point_4)
 # add_subdirectory(vulkan_projects)
 
