@@ -3,6 +3,8 @@
 #include <gst/gst.h>
 //#include <gst/rtsp-server/rtsp-server.h>
 
+#include <cairo.h>
+#include <cairo-gobject.h>
 int main(int argc, char* argv[]) {
     GstElement* pipeline, * src, * overlay,* enc, * pay, * sink;
     GstCaps* caps;
@@ -17,7 +19,7 @@ int main(int argc, char* argv[]) {
     /* Create elements */
     pipeline = gst_pipeline_new("mypipeline");
     src = gst_element_factory_make("videotestsrc", "mysrc");
-    overlay = gst_element_factory_make("cairooverlay", "myoverlay");
+    overlay = gst_element_factory_make("textoverlay", "myoverlay");
     enc = gst_element_factory_make("x264enc", "myenc");
     pay = gst_element_factory_make("rtph264pay", "mypay");
     sink = gst_element_factory_make("udpsink", "mysink");
@@ -44,12 +46,13 @@ int main(int argc, char* argv[]) {
     }
     /* Set up the overlay */
   /* Set overlay properties */
-    g_object_set(G_OBJECT(overlay), "xpos", 100, NULL);
+ /*   g_object_set(G_OBJECT(overlay), "xpos", 100, NULL);
     g_object_set(G_OBJECT(overlay), "ypos", 100, NULL);
     g_object_set(G_OBJECT(overlay), "valignment", "center", NULL);
     g_object_set(G_OBJECT(overlay), "halignment", "center", NULL);
     g_object_set(G_OBJECT(overlay), "draw", (GstElement*)gst_element_factory_make("textoverlay", "mytextoverlay"), NULL);
-
+*/
+    g_object_set(G_OBJECT(overlay), "text", "Hello, world!", NULL);
 
     /* Start playing */
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
