@@ -1,0 +1,16 @@
+﻿  Building Custom Rule C:/Users/david.imbajoa/Documents/repos/GitHub/ADASI_Test/point_4/CMakeLists.txt
+  point_4.cpp
+C:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0\gst/base/gstbytewriter.h(377,26): warning C4244: '+=': conversión de 'gssize' a 'guint'; posible pérdida de datos
+C:\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0\gst/base/gstbytewriter.h(397,7): warning C4244: 'argumento': conversión de 'gssize' a 'guint'; posible pérdida de datos
+LINK : warning LNK4044: opción '/LC:/gstreamer/1.0/msvc_x86_64/lib' no reconocida; omitida
+LINK : warning LNK4044: opción '/lgstrtspserver-1.0' no reconocida; omitida
+LINK : warning LNK4044: opción '/lgstreamer-1.0' no reconocida; omitida
+LINK : warning LNK4044: opción '/lgobject-2.0' no reconocida; omitida
+LINK : warning LNK4044: opción '/lglib-2.0' no reconocida; omitida
+LINK : warning LNK4044: opción '/lintl' no reconocida; omitida
+LINK : warning LNK4044: opción '/lgstrtspserver-1.0' no reconocida; omitida
+LINK : warning LNK4044: opción '/lgstreamer-1.0' no reconocida; omitida
+LINK : warning LNK4044: opción '/lgobject-2.0' no reconocida; omitida
+LINK : warning LNK4044: opción '/lglib-2.0' no reconocida; omitida
+LINK : warning LNK4044: opción '/lintl' no reconocida; omitida
+  point_4.vcxproj -> C:\Users\david.imbajoa\Documents\repos\GitHub\ADASI_Test\build\bin\Debug\point_4.exe

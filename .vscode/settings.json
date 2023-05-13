@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "MLTable": "yaml",
+        "chrono": "cpp",
+        "xutility": "cpp",
+        "xstring": "cpp"
+    }
+}

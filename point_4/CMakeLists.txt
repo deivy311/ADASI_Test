@@ -1,8 +1,10 @@
-cmake_minimum_required(VERSION 3.10)
+# cmake_minimum_required(VERSION 3.10)
+set(SUB_PROJECT_NAME "point_4")
 
-project(point_4)
 
-set(CMAKE_CXX_STANDARD 14) #setting C++ 14 standard
+# project(point_4)
+
+# set(CMAKE_CXX_STANDARD 14) #setting C++ 14 standard
 
 #finding pkg-config is a helper tool
 find_package(PkgConfig REQUIRED)
@@ -26,14 +28,13 @@ link_directories(
         ${GSTREAMER_BASE_LIBRARY_DIRS}
         ${GSTREAMER_RTSP_LIBRARY_DIRS}
         ${GSTREAMER_RTSP_SERVER_LIBRARY_DIRS}
-
 )
 
 #building target executable
-add_executable(${PROJECT_NAME} point_4.cpp)
+add_executable(${SUB_PROJECT_NAME} point_4.cpp)
 
-#linking Gstreamer library with target executable
-target_link_libraries(${PROJECT_NAME} ${GSTREAMER_LIBRARIES}
+# #linking Gstreamer library with target executable
+target_link_libraries(${SUB_PROJECT_NAME} ${GSTREAMER_LIBRARIES}
         ${GSTREAMER_BASE_LIBRARIES}
         ${GSTREAMER_RTSP_LIBRARIES}
         ${GSTREAMER_RTSP_SERVER_LIBRARIES}

@@ -1,0 +1,28 @@
+
+set(SUB_PROJECT_NAME "point_1")
+
+#finding pkg-config is a helper tool
+find_package(PkgConfig REQUIRED)
+
+# #using pkg-config to getting Gstreamer
+pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0 gstreamer-video-1.0 gstreamer-audio-1.0)
+pkg_search_module(GSTREAMER_RTSP_SERVER REQUIRED gstreamer-rtsp-server-1.0)
+#including GStreamer header files directory
+include_directories(
+        ${GLIB_INCLUDE_DIRS}
+        ${GSTREAMER_INCLUDE_DIRS}
+)
+
+#linking GStreamer library directory
+link_directories(
+        ${GLIB_LIBRARY_DIRS}
+        ${GSTREAMER_LIBRARY_DIRS}
+)
+
+#building target executable
+add_executable(${SUB_PROJECT_NAME} point_1.cpp)
+
+#linking Gstreamer library with target executable
+target_link_libraries(${SUB_PROJECT_NAME} ${GSTREAMER_LIBRARIES}
+        ${GST_LIBRARIES}
+        )

@@ -1,11 +1,12 @@
 #include <gst/gst.h>
 
 #include <gst/rtsp-server/rtsp-server.h>
-
+// #include <filesystem>
+// #include <iostream>
 #define DEFAULT_RTSP_PORT "5000"
 
 static char* port = (char*)DEFAULT_RTSP_PORT;
-
+using namespace std;
 static GOptionEntry entries[] = {
   {"port", 'p', 0, G_OPTION_ARG_STRING, &port,
       "Port to listen on (default: " DEFAULT_RTSP_PORT ")", "PORT"},
@@ -129,8 +130,8 @@ main(int argc, char* argv[])
   str = g_strdup_printf("( "
     "filesrc location=\"%s\" ! qtdemux name=d "
     "d. ! queue ! rtph264pay pt=96 name=pay0 "
-    "d. ! queue ! rtpmp4apay pt=97 name=pay1 " ")", "../video_test.mp4");
-
+    "d. ! queue ! rtpmp4apay pt=97 name=pay1 " ")", "../Files/video_test_2.mp4");
+  // auto cwd = std::filesystem::current_path();
   /* make a media factory for a test stream. The default media factory can use
    * gst-launch syntax to create pipelines.
    * any launch line works as long as it contains elements named pay%d. Each

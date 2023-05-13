@@ -1,0 +1,4 @@
+C:/Users/david.imbajoa/Documents/repos/GitHub/ADASI_Test/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/david.imbajoa/Documents/repos/GitHub/ADASI_Test/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/david.imbajoa/Documents/repos/GitHub/ADASI_Test/build/point_1/CMakeFiles/point_1.dir
+C:/Users/david.imbajoa/Documents/repos/GitHub/ADASI_Test/build/point_4/CMakeFiles/point_4.dir
