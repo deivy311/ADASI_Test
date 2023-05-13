@@ -141,21 +141,18 @@ int main(int argc, char* argv[]) {
     /* Start playing */
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
     g_print("Running...\n");
-    int messageType = GST_MESSAGE_ERROR | GST_MESSAGE_EOS;
+    bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
+    gst_bus_add_signal_watch (bus);
+    g_signal_connect (G_OBJECT (bus), "message", G_CALLBACK (on_message), loop);
+    gst_object_unref (GST_OBJECT (bus));
 
-    /* Wait until error or EOS */
-    bus = gst_element_get_bus(pipeline);
-    msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE,
-        (GstMessageType)messageType);
+    gst_element_set_state (pipeline, GST_STATE_PLAYING);
+    g_main_loop_run (loop);
 
-    /* Free resources */
-    if (msg != NULL) {
-        gst_message_unref(msg);
-    }
-    gst_object_unref(bus);
-    gst_element_set_state(pipeline, GST_STATE_NULL);
-    gst_object_unref(pipeline);
-    g_main_loop_unref(loop);
+    gst_element_set_state (pipeline, GST_STATE_NULL);
+    gst_object_unref (pipeline);
+
+    g_free (overlay_state);
 
     return 0;
 }
