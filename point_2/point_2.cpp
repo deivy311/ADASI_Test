@@ -135,7 +135,8 @@ int main(int argc, char* argv[]) {
     gst_init(&argc, &argv);
     loop = g_main_loop_new(NULL, FALSE);
 
-    
+      /* allocate on heap for pedagogical reasons, makes code easier to transfer */
+    overlay_state = g_new0 (CairoOverlayState, 1);
     pipeline = setup_gst_pipeline (overlay_state);
 
     /* Start playing */
