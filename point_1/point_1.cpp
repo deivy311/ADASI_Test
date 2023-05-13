@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }*/
     /* Link elements */
-    if (!gst_element_link_many(src, enc,pay, sink, NULL)) {
+    if (!gst_element_link_many(src, overlay,enc,pay, sink, NULL)) {
         g_printerr("Failed to link elements\n");
         return -1;
     }
