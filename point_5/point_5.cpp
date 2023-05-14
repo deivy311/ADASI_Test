@@ -147,10 +147,10 @@ static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state)
   }
 
   // Connect the "draw" signal to the "overlay" element with the "draw_overlay" callback function and the "overlay_state" data
-  g_signal_connect(overlay, "draw", G_CALLBACK(draw_overlay), overlay_state);
+  g_signal_connect(overlay, "draw", G_CALLBACK(local_overlay_manager->draw_overlay), overlay_state);
 
   // Connect the "caps-changed" signal to the "overlay" element with the "prepare_overlay" callback function and the "overlay_state" data
-  g_signal_connect(overlay, "caps-changed", G_CALLBACK(prepare_overlay), overlay_state);
+  g_signal_connect(overlay, "caps-changed", G_CALLBACK(local_overlay_manager->prepare_overlay), overlay_state);
 
   return pipeline;
 }
