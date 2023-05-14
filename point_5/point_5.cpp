@@ -1,14 +1,10 @@
 #include <gst/gst.h>
-//#include <gst/rtsp-server/rtsp-server.h>
 #include <gst/video/video.h>
-
 #include <cairo.h>
 #include <cairo-gobject.h>
-
 #include <glib.h>
 #include <gst/rtsp-server/rtsp-server.h>
-// #include <filesystem>
-// #include <iostream>
+
 #define DEFAULT_RTSP_PORT "5001"
 #define VIDEO_WIDTH 720
 #define VIDEO_HEIGHT 480
@@ -196,24 +192,13 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
 
   /* Create elements */
     pipeline = gst_pipeline_new("mypipeline");
-  // src = gst_element_factory_make("videotestsrc", "autovideosrc");
   src = gst_element_factory_make("autovideosrc", "autovideosrc");
-    // src = gst_element_factory_make("filesrc", "file-source");
-    // overlay = gst_element_factory_make("overlaycomposition", "myoverlay");
     adaptor1 = gst_element_factory_make ("videoconvert", "adaptor1");
     overlay = gst_element_factory_make ("cairooverlay", "myoverlay");
     videoconvert = gst_element_factory_make("videoconvert", "videoconvert");
     videoscale = gst_element_factory_make("videoscale", "videoscale");
     capsfilter = gst_element_factory_make("capsfilter", "capsfilter");
-    // caps = gst_caps_from_string("video/x-raw,width=640,height=480");
-    // caps = gst_caps_from_string ("video/x-raw, format = "
-    // GST_VIDEO_OVERLAY_COMPOSITION_BLEND_FORMATS);
-    // gst_caps_set_simple (caps,
-    //   "width", G_TYPE_INT, VIDEO_WIDTH,
-    //   "height", G_TYPE_INT, VIDEO_HEIGHT,
-    //   "framerate", GST_TYPE_FRACTION, VIDEO_FPS, 1, NULL);
-    // g_object_set (capsfilter, "caps", caps, NULL);
-    // gst_caps_unref (caps);
+
     caps = gst_caps_from_string("video/x-raw,width=640,height=480");
     g_object_set(capsfilter, "caps", caps, NULL);
     gst_caps_unref(caps);
@@ -221,22 +206,15 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
     muxer = gst_element_factory_make("matroskamux", "matroskamux");
     sink = gst_element_factory_make("tcpserversink", "tcpserversink");
 
-    // Create RTSP server element
-    // rtsp_server = gst_element_factory_make("rtspsink", "rtsp_server");
-    // g_object_set(G_OBJECT(rtsp_server), "location", "rtsp://127.0.0.1:5001/test", NULL);
     server = gst_rtsp_server_new();
     g_object_set(server, "service", port, NULL);
-
-    // // gst_rtsp_server_set_service(rtsp_server, "5001");
-    // // gst_rtsp_media_factory_set_shared(rtsp_source, TRUE);
 
     mounts = gst_rtsp_server_get_mount_points(server);
     str = g_strdup_printf("( "
     "filesrc location=\"%s\" ! qtdemux name=d "
     "d. ! queue ! rtph264pay pt=96 name=pay0 "
     "d. ! queue ! rtpmp4apay pt=97 name=pay1 " ")", "../Files/video_test_2.mp4");
-    //str = g_strdup_printf("( rtpbin name=rtpbin "
-    //    "filesrc location=../Files/video_test_2.mp4 ! decodebin ! videoconvert ! textoverlay name=overlay ! x264enc ! rtph264pay name=pay0 pt=96)");
+
     factory = gst_rtsp_media_factory_new();
     gst_rtsp_media_factory_set_launch(factory, str);
     // gst_rtsp_media_factory_set_shared(factory, TRUE);
@@ -248,12 +226,6 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
 
     /* attach the server to the default maincontext */
     gst_rtsp_server_attach(server, NULL);
-    /* Set properties */
-    /* Set properties */
-    // g_object_set(G_OBJECT(src), "location", "../Files/video_test_2.mp4", NULL);
-
-    // g_object_set(G_OBJECT(pay), "config-interval", 10, NULL);
-    // g_object_set(G_OBJECT(pay), "pt", 96, NULL);
 
     g_object_set(G_OBJECT(sink), "host", "127.0.0.1", NULL);
     g_object_set(G_OBJECT(sink), "port", 5002, NULL);
@@ -271,53 +243,55 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
       G_CALLBACK (draw_overlay), overlay_state);
     g_signal_connect (overlay, "caps-changed",
       G_CALLBACK (prepare_overlay), overlay_state);
-    // g_object_set(G_OBJECT(overlay), "draw", [](cairo_t *cr, int width, int height, gpointer data) {
-    //     // Draw overlay here
-    //     cairo_set_source_rgb(cr, 1, 1, 1);
-    //     cairo_rectangle(cr, 10, 10, 100, 50);
-    //     cairo_fill(cr);
-    // }, NULL, NULL);
-    // g_object_set(G_OBJECT(overlay), "text", "Hello, world!", NULL);
-    //   Set text and font properties
-    // g_object_set(G_OBJECT(overlay), "text", "Hello, world!", NULL);
-    // g_object_set(G_OBJECT(overlay), "font-desc", "Sans 24", NULL);
-
-    // // Set alignment and padding properties to move the text to the top-left corner
-    // g_object_set(G_OBJECT(overlay), "valignment", 0, "halignment", 0, "xpad", 50, "ypad", 50, NULL);
 
   return pipeline;
 }
+
 int main(int argc, char* argv[]) {
-    GstElement* pipeline, * src, * overlay,* enc, * pay, * sink;
-    GstCaps* caps;
-    GstBus* bus;
-    GstMessage* msg;
-    GMainLoop* loop;
-    CairoOverlayState *overlay_state;
+  GstElement* pipeline;  // Declare GStreamer pipeline
+  GstBus* bus;           // Declare GStreamer bus
+  GMainLoop* loop;       // Declare GMainLoop
+  CairoOverlayState* overlay_state;  // Declare Cairo overlay state struct
 
-    /* Initialize GStreamer */
-    gst_init(&argc, &argv);
-    loop = g_main_loop_new(NULL, FALSE);
+  /* Initialize GStreamer */
+  gst_init(&argc, &argv);
 
-      /* allocate on heap for pedagogical reasons, makes code easier to transfer */
-    overlay_state = g_new0 (CairoOverlayState, 1);
-    pipeline = setup_gst_pipeline (overlay_state);
+  /* Create a new GMainLoop */
+  loop = g_main_loop_new(NULL, FALSE);
 
-    /* Start playing */
-    gst_element_set_state(pipeline, GST_STATE_PLAYING);
-    g_print("Running...\n");
-    bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-    gst_bus_add_signal_watch (bus);
-    g_signal_connect (G_OBJECT (bus), "message", G_CALLBACK (on_message), loop);
-    gst_object_unref (GST_OBJECT (bus));
+  /* Allocate memory for Cairo overlay state struct on heap */
+  overlay_state = g_new0(CairoOverlayState, 1);
 
-    gst_element_set_state (pipeline, GST_STATE_PLAYING);
-    g_main_loop_run (loop);
+  /* Set up the GStreamer pipeline */
+  pipeline = setup_gst_pipeline(overlay_state);
 
-    gst_element_set_state (pipeline, GST_STATE_NULL);
-    gst_object_unref (pipeline);
+  /* Start playing the pipeline */
+  gst_element_set_state(pipeline, GST_STATE_PLAYING);
+  g_print("Running...\n");
 
-    g_free (overlay_state);
+  /* Get the pipeline's bus */
+  bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline));
 
-    return 0;
+  /* Add a signal watch for the bus */
+  gst_bus_add_signal_watch(bus);
+
+  /* Connect the bus's "message" signal to the on_message callback function */
+  g_signal_connect(G_OBJECT(bus), "message", G_CALLBACK(on_message), loop);
+
+  /* Unreference the bus */
+  gst_object_unref(GST_OBJECT(bus));
+
+  /* Run the GMainLoop */
+  g_main_loop_run(loop);
+
+  /* Stop the pipeline */
+  gst_element_set_state(pipeline, GST_STATE_NULL);
+
+  /* Unreference the pipeline */
+  gst_object_unref(pipeline);
+
+  /* Free the Cairo overlay state struct */
+  g_free(overlay_state);
+
+  return 0;
 }
