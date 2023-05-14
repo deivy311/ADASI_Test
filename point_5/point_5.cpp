@@ -8,16 +8,11 @@
 #define DEFAULT_RTSP_PORT "5001"
 #define DEFAULT_RTP_PORT 5002
 #define DEFAULT_RTSP_HOST "127.0.0.1"
-#define DEFAULT_RTP_HOST  "127.0.0.1"
+#define DEFAULT_RTP_HOST "127.0.0.1"
 #define VIDEO_WIDTH 720
 #define VIDEO_HEIGHT 480
 #define VIDEO_FPS 50
-// static char *port = (char *)DEFAULT_RTSP_PORT;
 using namespace std;
-// static GOptionEntry entries[] = {
-//     {"port", 'p', 0, G_OPTION_ARG_STRING, &port,
-//      "Port to listen on (default: " DEFAULT_RTSP_PORT ")", "PORT"},
-//     {NULL}};
 
 /* called when a stream has received an RTCP packet from the client */
 static void on_ssrc_active(GObject *session, GObject *source, GstRTSPMedia *media)
@@ -44,7 +39,6 @@ static void on_ssrc_active(GObject *session, GObject *source, GstRTSPMedia *medi
   }
 }
 
-
 static void
 on_sender_ssrc_active(GObject *session, GObject *source, GstRTSPMedia *media)
 {
@@ -61,7 +55,7 @@ on_sender_ssrc_active(GObject *session, GObject *source, GstRTSPMedia *media)
 
     // Convert the stats structure to a string
     sstr = gst_structure_to_string(stats);
-    
+
     // Print the sender's stats along with its structure
     g_print("Sender stats:\nstructure: %s\n", sstr);
     g_free(sstr);
@@ -70,7 +64,6 @@ on_sender_ssrc_active(GObject *session, GObject *source, GstRTSPMedia *media)
     gst_structure_free(stats);
   }
 }
-
 
 /* signal callback when the media is prepared for streaming. We can get the
  * session manager for each of the streams and connect to some signals. */
@@ -167,7 +160,6 @@ on_message(GstBus *bus, GstMessage *message, gpointer user_data)
   return TRUE;
 }
 
-
 /* Datastructure to share the state we are interested in between
  * prepare and render function. */
 typedef struct
@@ -188,7 +180,7 @@ prepare_overlay(GstElement *overlay, GstCaps *caps, gpointer user_data)
 /* Draw the overlay.
  * This function draws a cute "beating" heart. */
 static void draw_overlay(GstElement *overlay, cairo_t *cr, guint64 timestamp,
-             guint64 duration, gpointer user_data)
+                         guint64 duration, gpointer user_data)
 {
   CairoOverlayState *s = (CairoOverlayState *)user_data;
   double scale;
@@ -224,12 +216,9 @@ static void draw_overlay(GstElement *overlay, cairo_t *cr, guint64 timestamp,
   // Move the text cursor to the center of the rectangle
   cairo_move_to(cr, -30, 10);
 
-  // Display the text "ADASI" in the rectangle
+  // Display the text "ADASI Test" in the rectangle
   cairo_show_text(cr, "ADASI Test");
-
 }
-
-
 
 static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state)
 {
@@ -249,17 +238,17 @@ static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state)
 
   /* Create pipeline and elements */
   pipeline = gst_pipeline_new("mypipeline");
-  src = gst_element_factory_make("autovideosrc", "autovideosrc"); // Creates element for video capture from a device
-  adaptor1 = gst_element_factory_make("videoconvert", "adaptor1"); // Converts between various video formats
-  overlay = gst_element_factory_make("cairooverlay", "myoverlay"); // Adds cairo drawing on top of the video
+  src = gst_element_factory_make("autovideosrc", "autovideosrc");          // Creates element for video capture from a device
+  adaptor1 = gst_element_factory_make("videoconvert", "adaptor1");         // Converts between various video formats
+  overlay = gst_element_factory_make("cairooverlay", "myoverlay");         // Adds cairo drawing on top of the video
   videoconvert = gst_element_factory_make("videoconvert", "videoconvert"); // Converts between various video formats
-  videoscale = gst_element_factory_make("videoscale", "videoscale"); // Scales the video frame
-  capsfilter = gst_element_factory_make("capsfilter", "capsfilter"); // Limits the capabilities of the pipeline
-  caps = gst_caps_from_string("video/x-raw,width=640,height=480"); // Set the resolution of the video
-  g_object_set(capsfilter, "caps", caps, NULL); // Set the capsfilter to limit capabilities
+  videoscale = gst_element_factory_make("videoscale", "videoscale");       // Scales the video frame
+  capsfilter = gst_element_factory_make("capsfilter", "capsfilter");       // Limits the capabilities of the pipeline
+  caps = gst_caps_from_string("video/x-raw,width=640,height=480");         // Set the resolution of the video
+  g_object_set(capsfilter, "caps", caps, NULL);                            // Set the capsfilter to limit capabilities
   gst_caps_unref(caps);
-  encoder = gst_element_factory_make("x264enc", "x264enc"); // Compresses video with the x264 codec
-  muxer = gst_element_factory_make("matroskamux", "matroskamux"); // Muxes different streams of data into a Matroska file format
+  encoder = gst_element_factory_make("x264enc", "x264enc");          // Compresses video with the x264 codec
+  muxer = gst_element_factory_make("matroskamux", "matroskamux");    // Muxes different streams of data into a Matroska file format
   sink = gst_element_factory_make("tcpserversink", "tcpserversink"); // Sends video data to the client over TCP
 
   /* Create RTSP server */
@@ -288,25 +277,25 @@ static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state)
   /* Set TCP server sink properties */
   g_object_set(G_OBJECT(sink), "host", DEFAULT_RTP_HOST, NULL); // Set the host IP
 
-// Set the "port" property of the "sink" element to 5002
-g_object_set(G_OBJECT(sink), "port",DEFAULT_RTP_PORT, NULL);
+  // Set the "port" property of the "sink" element to 5002
+  g_object_set(G_OBJECT(sink), "port", DEFAULT_RTP_PORT, NULL);
 
-// Add elements to the pipeline
-gst_bin_add_many(GST_BIN(pipeline), src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL);
+  // Add elements to the pipeline
+  gst_bin_add_many(GST_BIN(pipeline), src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL);
 
-// Link the elements in the pipeline
-if (!gst_element_link_many(src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL))
-{
-  // If linking fails, print an error message and warning
-  g_printerr("Failed to link elements\n");
-  g_warning("Failed to link elements!");
-}
+  // Link the elements in the pipeline
+  if (!gst_element_link_many(src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL))
+  {
+    // If linking fails, print an error message and warning
+    g_printerr("Failed to link elements\n");
+    g_warning("Failed to link elements!");
+  }
 
-// Connect the "draw" signal to the "overlay" element with the "draw_overlay" callback function and the "overlay_state" data
-g_signal_connect(overlay, "draw", G_CALLBACK(draw_overlay), overlay_state);
+  // Connect the "draw" signal to the "overlay" element with the "draw_overlay" callback function and the "overlay_state" data
+  g_signal_connect(overlay, "draw", G_CALLBACK(draw_overlay), overlay_state);
 
-// Connect the "caps-changed" signal to the "overlay" element with the "prepare_overlay" callback function and the "overlay_state" data
-g_signal_connect(overlay, "caps-changed", G_CALLBACK(prepare_overlay), overlay_state);
+  // Connect the "caps-changed" signal to the "overlay" element with the "prepare_overlay" callback function and the "overlay_state" data
+  g_signal_connect(overlay, "caps-changed", G_CALLBACK(prepare_overlay), overlay_state);
 
   return pipeline;
 }
