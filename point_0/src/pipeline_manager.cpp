@@ -57,17 +57,16 @@ gboolean pipeline_manager::on_message(GstBus *bus, GstMessage *message, gpointer
   return TRUE;
 }
 
-GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_state)
+GstElement *pipeline_manager::setup_gst_pipeline()
 {
   /* Define variables */
-  GstElement *cairo_overlay;
   GstElement *adaptor1, *adaptor2;
   GstElement *pipeline, *src, *overlay, *capsfilter, *videoconvert, *pay, *sink;
-  GstRTSPMediaFactory *factory;
   gchar *str;
   GstElement *videoscale;
   GstElement *encoder;
   GstElement *muxer;
+  GstElement* queue;
   GstCaps *caps;
   GMainLoop *loop;
 
@@ -75,7 +74,6 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   pipeline = gst_pipeline_new("mypipeline");
   src = gst_element_factory_make("autovideosrc", "autovideosrc");          // Creates element for video capture from a device
   adaptor1 = gst_element_factory_make("videoconvert", "adaptor1");         // Converts between various video formats
-  overlay = gst_element_factory_make("cairooverlay", "myoverlay");         // Adds cairo drawing on top of the video
   videoconvert = gst_element_factory_make("videoconvert", "videoconvert"); // Converts between various video formats
   videoscale = gst_element_factory_make("videoscale", "videoscale");       // Scales the video frame
   capsfilter = gst_element_factory_make("capsfilter", "capsfilter");       // Limits the capabilities of the pipeline
@@ -84,9 +82,8 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   gst_caps_unref(caps);
   encoder = gst_element_factory_make("x264enc", "x264enc");          // Compresses video with the x264 codec
   muxer = gst_element_factory_make("matroskamux", "matroskamux");    // Muxes different streams of data into a Matroska file format
+  queue = gst_element_factory_make("queue", "queue");
   sink = gst_element_factory_make("tcpserversink", "tcpserversink"); // Sends video data to the client over TCP
-  overlay_manager* local_overlay_manager = new overlay_manager();
-  // RTSP_manager* rtsp_server_manager = new RTSP_manager(server, mounts, factory,DEFAULT_RTSP_HOST,DEFAULT_RTSP_PORT,DEFAULT_FILE_PATH);
   
   /* Set TCP server sink properties */
   g_object_set(G_OBJECT(sink), "host", DEFAULT_RTP_HOST, NULL); // Set the host IP
@@ -95,21 +92,14 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   g_object_set(G_OBJECT(sink), "port", DEFAULT_RTP_PORT, NULL);
 
   // Add elements to the pipeline
-  gst_bin_add_many(GST_BIN(pipeline), src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL);
+  gst_bin_add_many(GST_BIN(pipeline), src, adaptor1, videoconvert, videoscale, capsfilter, encoder, muxer, queue,sink, NULL);
 
   // Link the elements in the pipeline
-  if (!gst_element_link_many(src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL))
+  if (!gst_element_link_many(src, adaptor1, videoconvert, videoscale, capsfilter, encoder, muxer, queue, sink, NULL))
   {
     // If linking fails, print an error message and warning
     g_printerr("Failed to link elements\n");
     g_warning("Failed to link elements!");
   }
-
-  // Connect the "draw" signal to the "overlay" element with the "draw_overlay" callback function and the "overlay_state" data
-  g_signal_connect(overlay, "draw", G_CALLBACK(local_overlay_manager->draw_overlay), overlay_state);
-
-  // Connect the "caps-changed" signal to the "overlay" element with the "prepare_overlay" callback function and the "overlay_state" data
-  g_signal_connect(overlay, "caps-changed", G_CALLBACK(local_overlay_manager->prepare_overlay), overlay_state);
-
   return pipeline;
 }
