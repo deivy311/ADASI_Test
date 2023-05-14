@@ -17,6 +17,7 @@ int main (gint argc, gchar *argv[])
 {
   GstElement *pipeline;
   GstElement *src;
+  GstElement *decoder;
   GstElement *videoconvert;
   GstElement *videoscale;
   GstElement *encoder;
@@ -31,7 +32,8 @@ int main (gint argc, gchar *argv[])
 
   pipeline = gst_pipeline_new("pipeline");
 
-  src = gst_element_factory_make("autovideosrc", "autovideosrc");
+    src = gst_element_factory_make("videotestsrc", "mysrc");
+  // decoder = gst_element_factory_make("decodebin", "decoder");
   videoconvert = gst_element_factory_make("videoconvert", "videoconvert");
   videoscale = gst_element_factory_make("videoscale", "videoscale");
   capsfilter = gst_element_factory_make("capsfilter", "capsfilter");
@@ -42,11 +44,15 @@ int main (gint argc, gchar *argv[])
   muxer = gst_element_factory_make("matroskamux", "matroskamux");
   sink = gst_element_factory_make("tcpserversink", "tcpserversink");
 
-  g_object_set(sink, "host", HOST, NULL);
   g_object_set(sink, "host", HOST, "port", 5002, NULL);
 
   gst_bin_add_many(GST_BIN(pipeline), src, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL);
-  gst_element_link_many(src, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL);
+    if (!gst_element_link_many(src, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL))
+    {
+        g_printerr("Failed to link elements\n");
+        g_warning ("Failed to link elements!");
+    }
+  // g_object_set(src, "location", "../Files/video_test_2.mp4", NULL);
 
   gst_element_set_state(pipeline, GST_STATE_PLAYING);
   g_print("Pipeline playing\n");
