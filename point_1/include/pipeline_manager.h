@@ -6,7 +6,6 @@
 #include <cairo-gobject.h>
 #include <glib.h>
 #include <gst/rtsp-server/rtsp-server.h>
-#include <RTSP_manager.h>
 #include <overlay_manager.h>
 #define DEFAULT_RTSP_PORT "5001"
 #define DEFAULT_RTP_PORT 5002
