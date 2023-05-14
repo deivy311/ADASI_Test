@@ -65,12 +65,6 @@ on_message(GstBus *bus, GstMessage *message, gpointer user_data)
   return TRUE;
 }
 
-typedef struct
-{
-  gboolean valid;
-  GstVideoInfo vinfo;
-} CairoOverlayState;
-
 static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state)
 {
   /* Define variables */
