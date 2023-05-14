@@ -1,7 +1,7 @@
 #include "RTSP_manager.h"
 
 // define constructor and destructor
-RTSP_manager::RTSP_manager(GstRTSPServer *server, GstRTSPMountPoints *mounts, GstRTSPMediaFactory *factory, string host, string port, string file_path)
+RTSP_manager::RTSP_manager(GstRTSPServer*& server, GstRTSPMountPoints* &mounts, GstRTSPMediaFactory* &factory, string host, string port, char* file_path)
 {
     gchar *str;
     this->host = host;
@@ -20,7 +20,7 @@ RTSP_manager::RTSP_manager(GstRTSPServer *server, GstRTSPMountPoints *mounts, Gs
                           "d. ! queue ! rtph264pay pt=96 name=pay0 "
                           "d. ! queue ! rtpmp4apay pt=97 name=pay1 "
                           ")",
-                          this->file_path); // Define the pipeline as a GStreamer launch command string
+                          "../Files/video_test_2.mp4"); // Define the pipeline as a GStreamer launch command string
     factory = gst_rtsp_media_factory_new();
     gst_rtsp_media_factory_set_launch(factory, str); // Set the launch command for the factory
     g_signal_connect(factory, "media-configure", (GCallback)RTSP_manager::media_configure_cb,
@@ -38,19 +38,17 @@ RTSP_manager::~RTSP_manager()
 }
 
 // media_configure_cb
-static void RTSP_manager::media_configure_cb(GstRTSPMediaFactory *factory, GstRTSPMedia *media)
+void RTSP_manager::media_configure_cb(GstRTSPMediaFactory *factory, GstRTSPMedia *media)
 {
     // g_print("media_configure_cb called\n");
 
-    media_configure_cb(GstRTSPMediaFactory * factory, GstRTSPMedia * media)
-    {
-        /* connect our prepared signal so that we can see when this media is
-         * prepared for streaming */
-        g_signal_connect(media, "prepared", (GCallback)RTSP_manager::media_prepared_cb, factory);
-    }
+    /* connect our prepared signal so that we can see when this media is
+        * prepared for streaming */
+    g_signal_connect(media, "prepared", (GCallback)RTSP_manager::media_prepared_cb, factory);
+
 }
 
-static void RTSP_manager::media_prepared_cb(GstRTSPMedia *media)
+void RTSP_manager::media_prepared_cb(GstRTSPMedia *media)
 {
     guint i, n_streams;
 
@@ -87,7 +85,7 @@ static void RTSP_manager::media_prepared_cb(GstRTSPMedia *media)
     }
 }
 /* called when a stream has received an RTCP packet from the client */
-static void RTSP_manager::on_ssrc_active(GObject *session, GObject *source, GstRTSPMedia *media)
+void RTSP_manager::on_ssrc_active(GObject *session, GObject *source, GstRTSPMedia *media)
 {
     // Declare a pointer to a GstStructure
     GstStructure *stats;
@@ -111,7 +109,7 @@ static void RTSP_manager::on_ssrc_active(GObject *session, GObject *source, GstR
     }
 }
 
-static void RTSP_manager::on_sender_ssrc_active(GObject *session, GObject *source, GstRTSPMedia *media)
+void RTSP_manager::on_sender_ssrc_active(GObject *session, GObject *source, GstRTSPMedia *media)
 {
     GstStructure *stats;
 

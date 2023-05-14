@@ -229,6 +229,7 @@ static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state)
   GstElement *adaptor1, *adaptor2;
   GstElement *pipeline, *src, *overlay, *capsfilter, *videoconvert, *pay, *sink;
   GstRTSPMediaFactory *factory;
+  gchar *str;
   GstRTSPServer *server;
   GstRTSPMountPoints *mounts;
   GstElement *videoscale;
@@ -251,8 +252,31 @@ static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state)
   encoder = gst_element_factory_make("x264enc", "x264enc");          // Compresses video with the x264 codec
   muxer = gst_element_factory_make("matroskamux", "matroskamux");    // Muxes different streams of data into a Matroska file format
   sink = gst_element_factory_make("tcpserversink", "tcpserversink"); // Sends video data to the client over TCP
-  RTSP_manager* rtsp_server_manager = new RTSP_manager(server, mounts, factory,DEFAULT_RTSP_HOST,DEFAULT_RTSP_PORT,DEFAULT_FILE_PATH);
+  RTSP_manager* rtsp_server_manager = new RTSP_manager();
+      // RTSP_manager* rtsp_server_manager = new RTSP_manager(server, mounts, factory,DEFAULT_RTSP_HOST,DEFAULT_RTSP_PORT,DEFAULT_FILE_PATH);
   
+  /* Create RTSP server */
+  server = gst_rtsp_server_new();
+  g_object_set(server, "service", DEFAULT_RTSP_PORT, NULL); // Set the server port
+
+  /* Create RTSP media factory */
+  mounts = gst_rtsp_server_get_mount_points(server);
+  str = g_strdup_printf("( "
+                        "filesrc location=\"%s\" ! qtdemux name=d "
+                        "d. ! queue ! rtph264pay pt=96 name=pay0 "
+                        "d. ! queue ! rtpmp4apay pt=97 name=pay1 "
+                        ")",
+                        "../Files/video_test_2.mp4"); // Define the pipeline as a GStreamer launch command string
+  factory = gst_rtsp_media_factory_new();
+  gst_rtsp_media_factory_set_launch(factory, str); // Set the launch command for the factory
+  g_signal_connect(factory, "media-configure", (GCallback)rtsp_server_manager->media_configure_cb,
+                   factory); // Connect the media-configure callback function
+  g_free(str);
+  gst_rtsp_mount_points_add_factory(mounts, "/test", factory); // Add the factory to the mount points
+  g_object_unref(mounts);
+
+  /* Attach the server to the default maincontext */
+  gst_rtsp_server_attach(server, NULL);
   /* Set TCP server sink properties */
   g_object_set(G_OBJECT(sink), "host", DEFAULT_RTP_HOST, NULL); // Set the host IP
 
