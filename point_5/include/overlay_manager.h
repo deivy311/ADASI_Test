@@ -20,7 +20,6 @@ class overlay_manager
 public:
     //define constructor and destructor
 	overlay_manager();
-	overlay_manager(GstRTSPServer*& server, GstRTSPMountPoints*& mounts, GstRTSPMediaFactory*& factory , string host ,string port, char* file_path);
 	~overlay_manager();
 public:
 
