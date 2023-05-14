@@ -250,7 +250,8 @@ static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state)
   encoder = gst_element_factory_make("x264enc", "x264enc");          // Compresses video with the x264 codec
   muxer = gst_element_factory_make("matroskamux", "matroskamux");    // Muxes different streams of data into a Matroska file format
   sink = gst_element_factory_make("tcpserversink", "tcpserversink"); // Sends video data to the client over TCP
-
+  auto server_manager = new RTP_manager();
+  server_manager->test_function();
   /* Create RTSP server */
   server = gst_rtsp_server_new();
   g_object_set(server, "service", DEFAULT_RTSP_PORT, NULL); // Set the server port
