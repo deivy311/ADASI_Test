@@ -1,9 +1,9 @@
-#include "RTP_manager.h"
+#include "RSTP_manager.h"
 
 //define constructor and destructor
-RTP_manager::RTP_manager(GstRTSPServer* server, GstRTSPMountPoints* mounts, GstRTSPMediaFactory* factory, gchar* str )
+RSTP_manager::RSTP_manager(GstRTSPServer* server, GstRTSPMountPoints* mounts, GstRTSPMediaFactory* factory, gchar* str )
 {
-    g_print("RTP_manager constructor called\n");
+    g_print("RSTP_manager constructor called\n");
     
     /* Create RTSP server */
     server = gst_rtsp_server_new();
@@ -13,8 +13,8 @@ RTP_manager::RTP_manager(GstRTSPServer* server, GstRTSPMountPoints* mounts, GstR
     mounts = gst_rtsp_server_get_mount_points(server);
     str = g_strdup_printf("( "
                             "filesrc location=\"%s\" ! qtdemux name=d "
-                            "d. ! queue ! rtph264pay pt=96 name=pay0 "
-                            "d. ! queue ! rtpmp4apay pt=97 name=pay1 "
+                            "d. ! queue ! RSTPh264pay pt=96 name=pay0 "
+                            "d. ! queue ! RSTPmp4apay pt=97 name=pay1 "
                             ")",
                             "../Files/video_test_2.mp4"); // Define the pipeline as a GStreamer launch command string
     factory = gst_rtsp_media_factory_new();
@@ -28,7 +28,7 @@ RTP_manager::RTP_manager(GstRTSPServer* server, GstRTSPMountPoints* mounts, GstR
     /* Attach the server to the default maincontext */
     gst_rtsp_server_attach(server, NULL);
 }
-RTP_manager::~RTP_manager()
+RSTP_manager::~RSTP_manager()
 {
-    g_print("RTP_manager destructor called\n");
+    g_print("RSTP_manager destructor called\n");
 }
