@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <gst/gst.h>
+#include <gst/rtsp-server/rtsp-server.h>
 
 using namespace std;
 class RTSP_manager
