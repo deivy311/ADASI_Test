@@ -4,7 +4,8 @@
 #include <cairo-gobject.h>
 #include <glib.h>
 #include <gst/rtsp-server/rtsp-server.h>
-#include <RTP_manager.h>
+//include RTP manager library
+#include "RTP_manager.h"
 #define DEFAULT_RTSP_PORT "5001"
 #define DEFAULT_RTP_PORT 5002
 #define DEFAULT_RTSP_HOST "127.0.0.1"
@@ -235,7 +236,7 @@ static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state)
   GstElement *muxer;
   GstCaps *caps;
   GMainLoop *loop;
-
+  auto tes=new RTP_manager();
   /* Create pipeline and elements */
   pipeline = gst_pipeline_new("mypipeline");
   src = gst_element_factory_make("autovideosrc", "autovideosrc");          // Creates element for video capture from a device
