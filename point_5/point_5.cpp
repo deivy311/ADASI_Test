@@ -196,24 +196,27 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
 
   /* Create elements */
     pipeline = gst_pipeline_new("mypipeline");
-    src = gst_element_factory_make("videotestsrc", "mysrc");
+    src = gst_element_factory_make("videotestsrc", "autovideosrc");
+  //src = gst_element_factory_make("autovideosrc", "autovideosrc");
     // src = gst_element_factory_make("filesrc", "file-source");
     // overlay = gst_element_factory_make("overlaycomposition", "myoverlay");
+    adaptor1 = gst_element_factory_make ("videoconvert", "adaptor1");
     overlay = gst_element_factory_make ("cairooverlay", "myoverlay");
     videoconvert = gst_element_factory_make("videoconvert", "videoconvert");
     videoscale = gst_element_factory_make("videoscale", "videoscale");
     capsfilter = gst_element_factory_make("capsfilter", "capsfilter");
     // caps = gst_caps_from_string("video/x-raw,width=640,height=480");
-    caps = gst_caps_from_string ("video/x-raw, format = "
-    GST_VIDEO_OVERLAY_COMPOSITION_BLEND_FORMATS);
-    gst_caps_set_simple (caps,
-      "width", G_TYPE_INT, VIDEO_WIDTH,
-      "height", G_TYPE_INT, VIDEO_HEIGHT,
-      "framerate", GST_TYPE_FRACTION, VIDEO_FPS, 1, NULL);
-    g_object_set (capsfilter, "caps", caps, NULL);
-    gst_caps_unref (caps);
-    // g_object_set(capsfilter, "caps", caps, NULL);
-    // gst_caps_unref(caps);
+    // caps = gst_caps_from_string ("video/x-raw, format = "
+    // GST_VIDEO_OVERLAY_COMPOSITION_BLEND_FORMATS);
+    // gst_caps_set_simple (caps,
+    //   "width", G_TYPE_INT, VIDEO_WIDTH,
+    //   "height", G_TYPE_INT, VIDEO_HEIGHT,
+    //   "framerate", GST_TYPE_FRACTION, VIDEO_FPS, 1, NULL);
+    // g_object_set (capsfilter, "caps", caps, NULL);
+    // gst_caps_unref (caps);
+    caps = gst_caps_from_string("video/x-raw,width=640,height=480");
+    g_object_set(capsfilter, "caps", caps, NULL);
+    gst_caps_unref(caps);
     encoder = gst_element_factory_make("x264enc", "x264enc");
     muxer = gst_element_factory_make("matroskamux", "matroskamux");
     sink = gst_element_factory_make("tcpserversink", "tcpserversink");
@@ -257,8 +260,8 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
 
     /* Add elements to pipeline */
 
-    gst_bin_add_many(GST_BIN(pipeline), src, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL);
-    if (!gst_element_link_many(src, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL))
+    gst_bin_add_many(GST_BIN(pipeline), src,adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL);
+    if (!gst_element_link_many(src,adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL))
     {
         g_printerr("Failed to link elements\n");
         g_warning ("Failed to link elements!");
