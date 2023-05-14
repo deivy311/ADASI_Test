@@ -196,8 +196,8 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
 
   /* Create elements */
     pipeline = gst_pipeline_new("mypipeline");
-    src = gst_element_factory_make("videotestsrc", "autovideosrc");
-  //src = gst_element_factory_make("autovideosrc", "autovideosrc");
+  // src = gst_element_factory_make("videotestsrc", "autovideosrc");
+  src = gst_element_factory_make("autovideosrc", "autovideosrc");
     // src = gst_element_factory_make("filesrc", "file-source");
     // overlay = gst_element_factory_make("overlaycomposition", "myoverlay");
     adaptor1 = gst_element_factory_make ("videoconvert", "adaptor1");
