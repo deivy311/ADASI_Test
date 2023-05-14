@@ -87,8 +87,14 @@ link_directories(
         ${Cairo_LIBRARY_DIRS}
 )
 
+# Add source files
+file(GLOB_RECURSE SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c)
+
+# Add header files
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 #building target executable
-add_executable(${SUB_PROJECT_NAME} src/point_5.cpp)
+add_executable(${SUB_PROJECT_NAME} point_5.cpp)
 
 # #linking Gstreamer library with target executable
 target_link_libraries(${SUB_PROJECT_NAME} ${GSTREAMER_LIBRARIES}
