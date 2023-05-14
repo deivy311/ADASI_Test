@@ -106,7 +106,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 message(STATUS "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
 #building target executable
 # add_executable(${SUB_PROJECT_NAME} point_0.cpp ${SOURCE_FILES_LOCAL} ${HEADER_FILES_LOCAL})
-add_executable(${SUB_PROJECT_NAME} point_5.cpp  ${SOURCE_FILES})
+add_executable(${SUB_PROJECT_NAME} point_4.cpp  ${SOURCE_FILES})
 # link the exe against the libraries
 # target_sources(${SUB_PROJECT_NAME} PRIVATE ${SOURCE_FILES_LOCAL})
 
