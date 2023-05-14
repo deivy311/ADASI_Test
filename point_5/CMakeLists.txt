@@ -1,11 +1,6 @@
 # cmake_minimum_required(VERSION 3.10)
 set(SUB_PROJECT_NAME "point_5")
 
-
-# project(point_5)
-
-# set(CMAKE_CXX_STANDARD 14) #setting C++ 14 standard
-
 #finding pkg-config is a helper tool
 find_package(PkgConfig REQUIRED)
 #find_package(Cairo_PKG REQUIRED)
@@ -93,7 +88,7 @@ link_directories(
 )
 
 #building target executable
-add_executable(${SUB_PROJECT_NAME} point_5.cpp)
+add_executable(${SUB_PROJECT_NAME} src/point_5.cpp)
 
 # #linking Gstreamer library with target executable
 target_link_libraries(${SUB_PROJECT_NAME} ${GSTREAMER_LIBRARIES}
