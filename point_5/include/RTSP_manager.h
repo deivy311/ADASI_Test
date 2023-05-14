@@ -3,12 +3,12 @@
 #include <gst/gst.h>
 
 using namespace std;
-class RSTP_manager
+class RTSP_manager
 {
 public:
     //define constructor and destructor
-	RSTP_manager();
-	~RSTP_manager();
+	RTSP_manager();
+	~RTSP_manager();
 	string test_function();
 };
 
