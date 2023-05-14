@@ -228,7 +228,6 @@ static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state)
   GstElement *cairo_overlay;
   GstElement *adaptor1, *adaptor2;
   GstElement *pipeline, *src, *overlay, *capsfilter, *videoconvert, *pay, *sink;
-  gchar *str;
   GstRTSPMediaFactory *factory;
   GstRTSPServer *server;
   GstRTSPMountPoints *mounts;

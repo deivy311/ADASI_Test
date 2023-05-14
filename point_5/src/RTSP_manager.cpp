@@ -3,6 +3,7 @@
 // define constructor and destructor
 RTSP_manager::RTSP_manager(GstRTSPServer *server, GstRTSPMountPoints *mounts, GstRTSPMediaFactory *factory, string host, string port, string file_path)
 {
+    gchar *str;
     this->host = host;
     this->port = port;
     this->file_path = file_path;
