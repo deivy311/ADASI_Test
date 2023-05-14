@@ -107,12 +107,12 @@ setup_gst_pipeline (CairoOverlayState * overlay_state)
     enc = gst_element_factory_make("x264enc", "myenc");
     pay = gst_element_factory_make("rtph264pay", "mypay");
     sink = gst_element_factory_make("udpsink", "mysink");
-    g_object_set(G_OBJECT(overlay), "draw", [](cairo_t *cr, int width, int height, gpointer data) {
-        // Draw overlay here
-        cairo_set_source_rgb(cr, 1, 1, 1);
-        cairo_rectangle(cr, 10, 10, 100, 50);
-        cairo_fill(cr);
-    }, NULL, NULL);
+    // g_object_set(G_OBJECT(overlay), "draw", [](cairo_t *cr, int width, int height, gpointer data) {
+    //     // Draw overlay here
+    //     cairo_set_source_rgb(cr, 1, 1, 1);
+    //     cairo_rectangle(cr, 10, 10, 100, 50);
+    //     cairo_fill(cr);
+    // }, NULL, NULL);
     /* Set properties */
     g_object_set (G_OBJECT (capsfilter), "caps",
                   gst_caps_from_string ("video/x-raw, format=RGB"),
