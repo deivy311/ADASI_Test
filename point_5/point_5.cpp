@@ -65,8 +65,6 @@ on_message(GstBus *bus, GstMessage *message, gpointer user_data)
   return TRUE;
 }
 
-/* Datastructure to share the state we are interested in between
- * prepare and render function. */
 typedef struct
 {
   gboolean valid;

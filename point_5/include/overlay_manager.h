@@ -8,6 +8,13 @@
 #include <gst/rtsp-server/rtsp-server.h>
 
 using namespace std;
+/* Datastructure to share the state we are interested in between
+ * prepare and render function. */
+typedef struct
+{
+  gboolean valid;
+  GstVideoInfo vinfo;
+} CairoOverlayState;
 class overlay_manager
 {
 public:
