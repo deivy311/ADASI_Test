@@ -38,8 +38,8 @@ int main (gint argc, gchar *argv[])
   caps = gst_caps_from_string("video/x-raw,width=640,height=480");
   g_object_set(capsfilter, "caps", caps, NULL);
   gst_caps_unref(caps);
-  encoder = gst_element_factory_make("theoraenc", "theoraenc");
-  muxer = gst_element_factory_make("oggmux", "oggmux");
+  encoder = gst_element_factory_make("x264enc", "x264enc");
+  muxer = gst_element_factory_make("matroskamux", "matroskamux");
   sink = gst_element_factory_make("tcpserversink", "tcpserversink");
 
   g_object_set(sink, "host", HOST, NULL);
@@ -57,7 +57,7 @@ int main (gint argc, gchar *argv[])
   g_main_loop_unref(loop);
 
   gst_element_set_state(pipeline, GST_STATE_NULL);
-  g_print("Closed succesfully\n");
+  g_print("Closed successfully\n");
 
   ret = 0;
   goto no_src;
