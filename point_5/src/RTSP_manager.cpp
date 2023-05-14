@@ -1,6 +1,10 @@
 #include "RTSP_manager.h"
 
 // define constructor and destructor
+RTSP_manager::RTSP_manager()
+{
+    g_print("RTSP_manager constructor called\n");
+}
 RTSP_manager::RTSP_manager(GstRTSPServer*& server, GstRTSPMountPoints* &mounts, GstRTSPMediaFactory* &factory, string host, string port, char* file_path)
 {
     gchar *str;
