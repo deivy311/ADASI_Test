@@ -1,5 +1,0 @@
-/home/deivy311/Documents/GitHub/ADASI_Test/build/CMakeFiles/edit_cache.dir
-/home/deivy311/Documents/GitHub/ADASI_Test/build/CMakeFiles/rebuild_cache.dir
-/home/deivy311/Documents/GitHub/ADASI_Test/build/point_5/CMakeFiles/point_5.dir
-/home/deivy311/Documents/GitHub/ADASI_Test/build/point_5/CMakeFiles/edit_cache.dir
-/home/deivy311/Documents/GitHub/ADASI_Test/build/point_5/CMakeFiles/rebuild_cache.dir
