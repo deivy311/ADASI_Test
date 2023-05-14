@@ -12,7 +12,8 @@ pipeline_manager::~pipeline_manager()
 
 gboolean pipeline_manager::on_message(GstBus *bus, GstMessage *message, gpointer user_data)
 {
-  GMainLoop *loop = (GMainLoop *)user_data;
+  // Get a pointer to the pipeline manager object
+  pipeline_manager *manager = static_cast<pipeline_manager *>(user_data);
 
   switch (GST_MESSAGE_TYPE(message))
   {
@@ -28,7 +29,7 @@ gboolean pipeline_manager::on_message(GstBus *bus, GstMessage *message, gpointer
     g_critical("Got ERROR: %s (%s)", err->message, GST_STR_NULL(debug));
 
     // quit the main loop
-    g_main_loop_quit(loop);
+    g_main_loop_quit(manager->loop);
     break;
   }
   case GST_MESSAGE_WARNING: // if warning message is received
@@ -43,20 +44,39 @@ gboolean pipeline_manager::on_message(GstBus *bus, GstMessage *message, gpointer
     g_warning("Got WARNING: %s (%s)", err->message, GST_STR_NULL(debug));
 
     // quit the main loop
-    g_main_loop_quit(loop);
+    g_main_loop_quit(manager->loop);
     break;
   }
   case GST_MESSAGE_EOS: // if end-of-stream message is received
     // quit the main loop
-    g_main_loop_quit(loop);
+    g_main_loop_quit(manager->loop);
     break;
   case GST_MESSAGE_ASYNC_DONE: // if asynchronous operation is done
   {
-    
+    // Calculate fps, delay, and inference time
+    GstClockTime curr_time = gst_clock_get_time(gst_system_clock_obtain());
+    GstClockTime diff_time = curr_time - manager->prev_time;
+    guint frames_count = manager->frames_count;
+    gdouble fps = 0.0;
+    GstClockTime delay = GST_CLOCK_TIME_NONE;
+    GstClockTime inference_time = GST_CLOCK_TIME_NONE;
+
+    if (diff_time >= GST_SECOND)
+    {
+      fps = (gdouble)frames_count * GST_SECOND / diff_time;
+      delay = diff_time - GST_SECOND;
+      // Run inference and calculate inference time here
+      inference_time = gst_clock_get_time(gst_system_clock_obtain()) - curr_time;
+      frames_count = 0;
+      manager->prev_time = curr_time;
+    }
 
     // Print metrics
-    g_print("FPS: %f\n", 90.0);
-       break;
+    g_print("FPS: %f\n", fps);
+    g_print("Delay: %" GST_TIME_FORMAT "\n", GST_TIME_ARGS(delay));
+    g_print("Inference time: %" GST_TIME_FORMAT "\n", GST_TIME_ARGS(inference_time));
+    manager->frames_count = frames_count;
+    break;
   }
   default:
     break;
