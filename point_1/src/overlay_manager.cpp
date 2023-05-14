@@ -29,7 +29,7 @@ void overlay_manager::draw_overlay(GstElement *overlay, cairo_t *cr, guint64 tim
     // Get the width and height of the video frame
     width = GST_VIDEO_INFO_WIDTH(&s->vinfo);
     height = GST_VIDEO_INFO_HEIGHT(&s->vinfo);
-
+    timestamp=1.0;
     // Calculate the scaling factor based on the timestamp
     scale = 2 * (((timestamp / (int)1e7) % 70) + 30) / 100.0;
 
