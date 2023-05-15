@@ -26,7 +26,7 @@ public:
 
 	static GstElement *setup_gst_pipeline(std::string source_type, std::string host, int port);
 public:
-	std::string source_type="videotestsrc";
+	std::string source_type="autovideosrc";
 	std::string host=DEFAULT_RTP_HOST;
 	int port=DEFAULT_RTP_PORT;
 
