@@ -32,11 +32,12 @@ public:
 	static gboolean on_message(GstBus *bus, GstMessage *message, gpointer user_data);
 	static gboolean my_callback_loop(GstBus *bus, GstMessage *message, gpointer user_data);
 
-	static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state, std::string source_type, std::string host, int port);
+	static GstElement *setup_gst_pipeline(CairoOverlayState *overlay_state, std::string source_type, std::string host, int port, std::string RTSP_port, std::string RTSP_file_path);
 
 public:
 	std::string source_type = "autovideosrc";
 	std::string host = DEFAULT_RTP_HOST;
 	int port = DEFAULT_RTP_PORT;
 	std::string RTSP_port = DEFAULT_RTSP_PORT;
+	std::string RTSP_file_path = DEFAULT_FILE_PATH;
 };

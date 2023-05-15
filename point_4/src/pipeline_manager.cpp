@@ -27,11 +27,21 @@ pipeline_manager::pipeline_manager(int argc, char *argv[])
     {
       port = atoi(argv[i + 1]);
     }
+    if (parameter_type == "-p_rtsp")
+    {
+      RTSP_port = argv[i + 1];
+    }
+    if (parameter_type == "-f")
+    {
+      RTSP_file_path = argv[i + 1];
+    }
   }
   // priting default parameters
   g_print("source_type: %s\n", source_type.c_str());
   g_print("RTP host: %s\n", host.c_str());
   g_print("RTP port: %d\n", port);
+  g_print("RTSP port: %s\n", RTSP_port.c_str());
+  g_print("RTSP file path: %s\n", RTSP_file_path.c_str());
 }
 
 pipeline_manager::~pipeline_manager()
@@ -132,7 +142,7 @@ gboolean pipeline_manager::on_message(GstBus *bus, GstMessage *message, gpointer
   return TRUE;
 }
 
-GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_state, std::string source_type, std::string host, int port)
+GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_state, std::string source_type, std::string host, int port, std::string RTSP_port, std::string RTSP_file_path)
 {
   /* Define variables */
   GstElement *cairo_overlay;
@@ -168,7 +178,7 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
 
   /* Create RTSP server */
   server = gst_rtsp_server_new();
-  g_object_set(server, "service", DEFAULT_RTSP_PORT, NULL); // Set the server port
+  g_object_set(server, "service", RTSP_port.c_str()), NULL); // Set the server port
 
   /* Create RTSP media factory */
   mounts = gst_rtsp_server_get_mount_points(server);
@@ -177,7 +187,7 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
                         "d. ! queue ! rtph264pay pt=96 name=pay0 "
                         "d. ! queue ! rtpmp4apay pt=97 name=pay1 "
                         ")",
-                        "../Files/video_test_2.mp4"); // Define the pipeline as a GStreamer launch command string
+                        RTSP_file_path.c_str()); // Define the pipeline as a GStreamer launch command string
   factory = gst_rtsp_media_factory_new();
   gst_rtsp_media_factory_set_launch(factory, str); // Set the launch command for the factory
   g_signal_connect(factory, "media-configure", (GCallback)rtsp_server_manager->media_configure_cb,
