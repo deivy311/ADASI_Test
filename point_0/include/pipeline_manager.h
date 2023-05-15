@@ -3,8 +3,9 @@
 #include <gst/gst.h>
 #include <gst/video/video.h>
 #include <glib.h>
+#include <chrono>   // for measuring time
+#include <iostream> // for console output
 
-#define DEFAULT_FILE_PATH "../Files/video_test_2.mp4"
 #define DEFAULT_RTP_HOST "127.0.0.1"
 #define DEFAULT_RTP_PORT 5002
 #define VIDEO_WIDTH 720
@@ -17,9 +18,17 @@ class pipeline_manager
 public:
     //define constructor and destructor
 	pipeline_manager();
+	pipeline_manager(int argc,char* argv[]);
 	~pipeline_manager();
 public:
 	static gboolean on_message(GstBus *bus, GstMessage *message, gpointer user_data);
-	static GstElement *setup_gst_pipeline();
+	static gboolean my_callback_loop(GstBus* bus, GstMessage* message, gpointer user_data);
+
+	static GstElement *setup_gst_pipeline(std::string source_type, std::string host, int port);
+public:
+	std::string source_type="videotestsrc";
+	std::string host=DEFAULT_RTP_HOST;
+	int port=DEFAULT_RTP_PORT;
+
 };
 
