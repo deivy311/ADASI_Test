@@ -147,7 +147,14 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   /* Define variables */
   GstElement *cairo_overlay;
   GstElement *adaptor1, *adaptor2;
-  GstElement *pipeline, *src, *overlay, *capsfilter, *videoconvert, *pay, *sink;
+  GstElement *pipeline, *src, *overlay, *capsfilter, *videoconvert, *pay, *sink, *filesink;
+  GstElement *tee;
+  GstPad *tee_file_pad, *queue_file_pad;
+  GstPad *tee_video_pad, *queue_video_pad;
+  GstPad *filesink_pad;
+  GstPad *tcpserversink_pad;
+  GstElement *video_queue;
+  GstElement *file_queue;
   GstRTSPMediaFactory *factory;
   gchar *str;
   GstRTSPServer *server;
