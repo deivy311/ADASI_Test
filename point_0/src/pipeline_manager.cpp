@@ -152,7 +152,7 @@ GstElement *pipeline_manager::setup_gst_pipeline(std::string source_type, std::s
   sink = gst_element_factory_make("tcpserversink", "tcpserversink"); // Sends video data to the client over TCP
   
   /* Set TCP server sink properties */
-  g_object_set(G_OBJECT(sink), "host", host, NULL); // Set the host IP
+  g_object_set(G_OBJECT(sink), "host", host.c_str(), NULL); // Set the host IP
 
   // Set the "port" property of the "sink" element to 5002
   g_object_set(G_OBJECT(sink), "port", port, NULL);
