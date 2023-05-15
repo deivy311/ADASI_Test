@@ -179,7 +179,7 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   gst_caps_unref(caps);
   encoder = gst_element_factory_make("x264enc", "x264enc");          // Compresses video with the x264 codec
   muxer = gst_element_factory_make("matroskamux", "matroskamux");    // Muxes different streams of data into a Matroska file format
-    filesink = gst_element_factory_make("filesink", "filesink");
+  filesink = gst_element_factory_make("filesink", "filesink");
   g_object_set(filesink, "location", "camera_record.mp4", NULL);
   file_queue = gst_element_factory_make("queue", "file_queue");
   sink = gst_element_factory_make("tcpserversink", "tcpserversink"); // Sends video data to the client over TCP
@@ -219,14 +219,20 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   g_object_set(G_OBJECT(sink), "port", port, NULL);
 
   // Add elements to the pipeline
-  gst_bin_add_many(GST_BIN(pipeline), src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL);
+  gst_bin_add_many(GST_BIN(pipeline), src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, tee, video_queue, sink, file_queue, filesink, NULL);
 
   // Link the elements in the pipeline
-  if (!gst_element_link_many(src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL))
+  if (!gst_element_link_many(src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, tee, NULL))
   {
-    // If linking fails, print an error message and warning
-    g_printerr("Failed to link elements\n");
-    g_warning("Failed to link elements!");
+    g_warning("Failed to link elements until tee!");
+  }
+  if (!gst_element_link_many(video_queue, sink, NULL))
+  {
+    g_warning("Failed to encoder link element with streamer sink ");
+  }
+  if (!gst_element_link_many(file_queue, filesink, NULL))
+  {
+    g_warning("Failed to encoder link element with file sink ");
   }
 
   // Connect the "draw" signal to the "overlay" element with the "draw_overlay" callback function and the "overlay_state" data

@@ -62,7 +62,7 @@ int main(gint argc, gchar *argv[])
   // gst_element_link_many(src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, NULL);
   if (!gst_element_link_many(src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, NULL))
   {
-    g_warning("Failed to link elements untile tee!");
+    g_warning("Failed to link elements until tee!");
   }
   if (!gst_element_link_many(video_queue, sink, NULL))
   {
