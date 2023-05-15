@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
   overlay_state = g_new0(CairoOverlayState, 1);
 
   /* Set up the GStreamer pipeline */
-  pipeline = local_pipeline_manager->setup_gst_pipeline(local_pipeline_manager->source_type, local_pipeline_manager->host, local_pipeline_manager->port);
+  pipeline = local_pipeline_manager->setup_gst_pipeline(overlay_state,local_pipeline_manager->source_type, local_pipeline_manager->host, local_pipeline_manager->port);
 
   /* Start playing the pipeline */
   gst_element_set_state(pipeline, GST_STATE_PLAYING);

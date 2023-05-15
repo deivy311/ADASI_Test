@@ -127,7 +127,7 @@ gboolean pipeline_manager::on_message(GstBus *bus, GstMessage *message, gpointer
   return TRUE;
 }
 
-GstElement *pipeline_manager::setup_gst_pipeline(std::string source_type, std::string host, int port)
+GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState * overlay_state,std::string source_type, std::string host, int port)
 {
   /* Define variables */
   GstElement *cairo_overlay;
