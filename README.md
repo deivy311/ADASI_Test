@@ -5,6 +5,7 @@ The requirements to run the code are:
     Gstreamer 1.0
     OpenCV 3.4.2
     CMake 3.5.1
+    cairo
     C++ 17
     VLC >3.0.6
 Setup
