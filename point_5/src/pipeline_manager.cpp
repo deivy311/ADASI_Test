@@ -244,9 +244,8 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   if (gst_pad_link(tee_video_pad, queue_video_pad) != GST_PAD_LINK_OK ||
       gst_pad_link(tee_file_pad, queue_file_pad) != GST_PAD_LINK_OK)
   {
-    g_printerr("Tee could not be linked.\n");
+    g_warning("Tee could not be linked.\n");
     gst_object_unref(pipeline);
-    return -1;
   }
 
   gst_object_unref(queue_video_pad);
