@@ -178,7 +178,7 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
 
   /* Create RTSP server */
   server = gst_rtsp_server_new();
-  g_object_set(server, "service", RTSP_port.c_str()), NULL); // Set the server port
+  g_object_set(server, "service", RTSP_port.c_str(), NULL); // Set the server port
 
   /* Create RTSP media factory */
   mounts = gst_rtsp_server_get_mount_points(server);
