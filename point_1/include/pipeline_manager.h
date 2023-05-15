@@ -7,6 +7,8 @@
 #include <glib.h>
 #include <gst/rtsp-server/rtsp-server.h>
 #include <overlay_manager.h>
+#include <chrono>	// for measuring time
+#include <iostream> // for console output
 #define DEFAULT_RTSP_PORT "5001"
 #define DEFAULT_RTP_PORT 5002
 #define DEFAULT_FILE_PATH "../Files/video_test_2.mp4"
