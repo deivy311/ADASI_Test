@@ -3,9 +3,9 @@
 
 #define HOST "127.0.0.1"
 
-gboolean signal_handler (gpointer user_data)
+gboolean signal_handler(gpointer user_data)
 {
-  GMainLoop *loop = (GMainLoop *) user_data;
+  GMainLoop *loop = (GMainLoop *)user_data;
 
   g_print("closing the main loop");
   g_main_loop_quit(loop);
@@ -13,7 +13,7 @@ gboolean signal_handler (gpointer user_data)
   return TRUE;
 }
 
-int main (gint argc, gchar *argv[])
+int main(gint argc, gchar *argv[])
 {
   GstElement *pipeline;
   GstElement *src;
@@ -22,12 +22,12 @@ int main (gint argc, gchar *argv[])
   GstElement *encoder;
   GstElement *capsfilter;
   GstElement *muxer;
-  GstElement *sink,*filesink;
+  GstElement *sink, *filesink;
   GstElement *tee;
   GstPad *muxer_video_pad;
   GstPad *muxer_file_pad;
-  GstPad *tee_file_pad,*queue_file_pad;
-  GstPad *tee_video_pad,*queue_video_pad;
+  GstPad *tee_file_pad, *queue_file_pad;
+  GstPad *tee_video_pad, *queue_video_pad;
   GstPad *filesink_pad;
   GstPad *tcpserversink_pad;
   GstElement *video_queue;
@@ -58,31 +58,35 @@ int main (gint argc, gchar *argv[])
 
   g_object_set(sink, "host", HOST, "port", 5002, NULL);
 
-  gst_bin_add_many(GST_BIN(pipeline), src, videoconvert, videoscale, capsfilter, encoder, muxer,tee,video_queue, sink,file_queue,filesink, NULL);
+  gst_bin_add_many(GST_BIN(pipeline), src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, video_queue, sink, file_queue, filesink, NULL);
   // gst_element_link_many(src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, NULL);
-  if(!gst_element_link_many(src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, NULL)){
-        g_warning ("Failed to link elements untile tee!");
-    }
-    if(!gst_element_link_many(video_queue, sink, NULL)){
-        g_warning ("Failed to encoder link element with streamer sink ");
-    }
-    if(!gst_element_link_many(file_queue, filesink, NULL)){
-        g_warning ("Failed to encoder link element with file sink ");
-    }
-  
+  if (!gst_element_link_many(src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, NULL))
+  {
+    g_warning("Failed to link elements untile tee!");
+  }
+  if (!gst_element_link_many(video_queue, sink, NULL))
+  {
+    g_warning("Failed to encoder link element with streamer sink ");
+  }
+  if (!gst_element_link_many(file_queue, filesink, NULL))
+  {
+    g_warning("Failed to encoder link element with file sink ");
+  }
+
   tee_video_pad = gst_element_request_pad_simple(tee, "src_%u");
-  g_print("Obtained request pad %s for video branch.\n", gst_pad_get_name (tee_video_pad));
+  g_print("Obtained request pad %s for video branch.\n", gst_pad_get_name(tee_video_pad));
   tee_file_pad = gst_element_request_pad_simple(tee, "src_%u");
-  g_print("Obtained request pad %s for file branch.\n", gst_pad_get_name (tee_file_pad));
+  g_print("Obtained request pad %s for file branch.\n", gst_pad_get_name(tee_file_pad));
 
   queue_video_pad = gst_element_get_static_pad(video_queue, "sink");
   queue_file_pad = gst_element_get_static_pad(file_queue, "sink");
 
-if(gst_pad_link(tee_video_pad, queue_video_pad) != GST_PAD_LINK_OK ||
-      gst_pad_link(tee_file_pad, queue_file_pad) != GST_PAD_LINK_OK) {
-      g_printerr("Tee could not be linked.\n");
-      gst_object_unref(pipeline);
-      return -1;
+  if (gst_pad_link(tee_video_pad, queue_video_pad) != GST_PAD_LINK_OK ||
+      gst_pad_link(tee_file_pad, queue_file_pad) != GST_PAD_LINK_OK)
+  {
+    g_printerr("Tee could not be linked.\n");
+    gst_object_unref(pipeline);
+    return -1;
   }
 
   gst_object_unref(queue_video_pad);

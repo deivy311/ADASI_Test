@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
   GstBus *bus;                      // Declare GStreamer bus
   GMainLoop *loop;                  // Declare GMainLoop
   CairoOverlayState *overlay_state; // Declare Cairo overlay state struct
-  pipeline_manager* local_pipeline_manager = new pipeline_manager(argc, argv);
+  pipeline_manager* local_pipeline_manager = new pipeline_manager();
 
   /* Initialize GStreamer */
   gst_init(&argc, &argv);
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
   overlay_state = g_new0(CairoOverlayState, 1);
 
   /* Set up the GStreamer pipeline */
-  pipeline = local_pipeline_manager->setup_gst_pipeline(overlay_state,local_pipeline_manager->source_type, local_pipeline_manager->host, local_pipeline_manager->port,local_pipeline_manager->RTSP_port,local_pipeline_manager->RTSP_file_path);
+  pipeline = local_pipeline_manager->setup_gst_pipeline(overlay_state);
 
   /* Start playing the pipeline */
   gst_element_set_state(pipeline, GST_STATE_PLAYING);
@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
 
   /* Unreference the bus */
   gst_object_unref(GST_OBJECT(bus));
+
   /* Run the GMainLoop */
   g_main_loop_run(loop);
 
