@@ -147,14 +147,7 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   /* Define variables */
   GstElement *cairo_overlay;
   GstElement *adaptor1, *adaptor2;
-  GstElement *pipeline, *src, *overlay, *capsfilter, *videoconvert, *pay, *sink, *filesink;
-  GstElement *tee;
-  GstPad *tee_file_pad, *queue_file_pad;
-  GstPad *tee_video_pad, *queue_video_pad;
-  GstPad *filesink_pad;
-  GstPad *tcpserversink_pad;
-  GstElement *video_queue;
-  GstElement *file_queue;
+  GstElement *pipeline, *src, *overlay, *capsfilter, *videoconvert, *pay, *sink;
   GstRTSPMediaFactory *factory;
   gchar *str;
   GstRTSPServer *server;
@@ -178,13 +171,7 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   gst_caps_unref(caps);
   encoder = gst_element_factory_make("x264enc", "x264enc");          // Compresses video with the x264 codec
   muxer = gst_element_factory_make("matroskamux", "matroskamux");    // Muxes different streams of data into a Matroska file format
-  filesink = gst_element_factory_make("filesink", "filesink");
-  g_object_set(filesink, "location", "camera_record.mp4", NULL);
-  file_queue = gst_element_factory_make("queue", "file_queue");
   sink = gst_element_factory_make("tcpserversink", "tcpserversink"); // Sends video data to the client over TCP
-  video_queue = gst_element_factory_make("queue", "video_queue");
-
-  
   RTSP_manager *rtsp_server_manager = new RTSP_manager();
   overlay_manager *local_overlay_manager = new overlay_manager();
   // RTSP_manager* rtsp_server_manager = new RTSP_manager(server, mounts, factory,DEFAULT_RTSP_HOST,DEFAULT_RTSP_PORT,DEFAULT_FILE_PATH);
@@ -218,21 +205,15 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   g_object_set(G_OBJECT(sink), "port", port, NULL);
 
   // Add elements to the pipeline
-  gst_bin_add_many(GST_BIN(pipeline), src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, video_queue, sink, NULL);//file_queue, filesink, NULL);
-  // gst_element_link_many(src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, NULL);
-  if (!gst_element_link_many(src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, NULL))
-  {
-    g_warning("Failed to link elements untile tee!");
-  }
-  if (!gst_element_link_many(video_queue, sink, NULL))
-  {
-    g_warning("Failed to encoder link element with streamer sink ");
-  }
-  // if (!gst_element_link_many(file_queue, filesink, NULL))
-  // {
-  //   g_warning("Failed to encoder link element with file sink ");
-  // }
+  gst_bin_add_many(GST_BIN(pipeline), src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL);
 
+  // Link the elements in the pipeline
+  if (!gst_element_link_many(src, adaptor1, overlay, videoconvert, videoscale, capsfilter, encoder, muxer, sink, NULL))
+  {
+    // If linking fails, print an error message and warning
+    g_printerr("Failed to link elements\n");
+    g_warning("Failed to link elements!");
+  }
 
   // Connect the "draw" signal to the "overlay" element with the "draw_overlay" callback function and the "overlay_state" data
   g_signal_connect(overlay, "draw", G_CALLBACK(local_overlay_manager->draw_overlay), overlay_state);
@@ -240,25 +221,6 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   // Connect the "caps-changed" signal to the "overlay" element with the "prepare_overlay" callback function and the "overlay_state" data
   g_signal_connect(overlay, "caps-changed", G_CALLBACK(local_overlay_manager->prepare_overlay), overlay_state);
 
-  // tee_video_pad = gst_element_request_pad_simple(tee, "src_%u");
-  // g_print("Obtained request pad %s for video branch.\n", gst_pad_get_name(tee_video_pad));
-  // tee_file_pad = gst_element_request_pad_simple(tee, "src_%u");
-  // g_print("Obtained request pad %s for file branch.\n", gst_pad_get_name(tee_file_pad));
-
-  // queue_video_pad = gst_element_get_static_pad(video_queue, "sink");
-  // queue_file_pad = gst_element_get_static_pad(file_queue, "sink");
-
-  // if (gst_pad_link(tee_video_pad, queue_video_pad) != GST_PAD_LINK_OK ||
-  //     gst_pad_link(tee_file_pad, queue_file_pad) != GST_PAD_LINK_OK)
-  // {
-  //   g_printerr("Tee could not be linked.\n");
-  //   g_warning("Tee could not be linked.\n");
-  //   gst_object_unref(pipeline);
-  //   // return -1;
-  // }
-
-  // gst_object_unref(queue_video_pad);
-  // gst_object_unref(queue_file_pad);
 
   return pipeline;
 }
