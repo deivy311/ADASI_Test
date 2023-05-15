@@ -108,7 +108,7 @@ gboolean pipeline_manager::on_message(GstBus *bus, GstMessage *message, gpointer
           /* Report delay */
           auto end_time = std::chrono::high_resolution_clock::now();
           auto delay_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-          g_print("Delay: %lld ms\n", delay_ms);
+          // g_print("Delay: %lld ms\n", delay_ms);
       }
       break;
   }
