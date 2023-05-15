@@ -28,11 +28,10 @@ pipeline_manager::pipeline_manager(int argc, char *argv[])
       port = atoi(argv[i + 1]);
     }
   }
-    //priting default parameters
+  // priting default parameters
   g_print("source_type: %s\n", source_type.c_str());
   g_print("RTP host: %s\n", host.c_str());
   g_print("RTP port: %d\n", port);
-
 }
 
 pipeline_manager::~pipeline_manager()
@@ -133,7 +132,7 @@ gboolean pipeline_manager::on_message(GstBus *bus, GstMessage *message, gpointer
   return TRUE;
 }
 
-GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState * overlay_state,std::string source_type, std::string host, int port)
+GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_state, std::string source_type, std::string host, int port)
 {
   /* Define variables */
   GstElement *cairo_overlay;
