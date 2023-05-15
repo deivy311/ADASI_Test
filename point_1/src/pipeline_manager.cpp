@@ -14,6 +14,7 @@ pipeline_manager::pipeline_manager(int argc, char *argv[])
   for (int i = 1; i < argc; i++)
   {
     std::string parameter_type = argv[i];
+
     if (parameter_type == "-s")
     {
       source_type = argv[i + 1];
@@ -26,6 +27,10 @@ pipeline_manager::pipeline_manager(int argc, char *argv[])
     {
       port = atoi(argv[i + 1]);
     }
+    //priting default parameters
+    g_print("source_type: %s\n", source_type.c_str());
+    g_print("RTP host: %s\n", host.c_str());
+    g_print("RTP port: %d\n", port);
   }
 }
 
@@ -143,7 +148,7 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState * overlay_sta
 
   /* Create pipeline and elements */
   pipeline = gst_pipeline_new("mypipeline");
-  src = gst_element_factory_make("autovideosrc", "autovideosrc");          // Creates element for video capture from a device
+  src = gst_element_factory_make(source_type.c_str(), "autovideosrc");     // Creates element for video capture from a device
   adaptor1 = gst_element_factory_make("videoconvert", "adaptor1");         // Converts between various video formats
   overlay = gst_element_factory_make("cairooverlay", "myoverlay");         // Adds cairo drawing on top of the video
   videoconvert = gst_element_factory_make("videoconvert", "videoconvert"); // Converts between various video formats
