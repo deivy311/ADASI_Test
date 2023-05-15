@@ -8,12 +8,16 @@ The requirements to run the code are:
     cairo
     C++ 17
     VLC >3.0.6
+
+
+
 Setup
 In order to set up, compile and run the code you have to follow the next steps:
 
     Install Gstreamer 1.0
     Install OpenCV 3.4.2
     Install CMake 3.5.1
+    Intall cairo dependencies
     Install VLC >3.0.6
     Clone the repository
         Clone the repository using the next link: 
@@ -32,9 +36,25 @@ In order to set up, compile and run the code you have to follow the next steps:
         Go to the folder where you compile the code and run the executable file, for this a better explnation is in the next section.
             ./point_0
             ./point_1
+Uubuntu 22.04
+    For Linux these libraries must be installed
+    Follow the steps here: https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-language=c
 
-Running the code
+    And in addition, run the following commands:
+
+        sudo apt install libgirepository1.0-dev
+        sudo apt install gir1.2-gst-rtsp-server-1.0
+        auso apt install libgstreamer-plugins-good1.0-0 libgstreamer-plugins-good1.0-dev gstreamer1.0-plugins-good
+        sudo apt install gstreamer1.0-rtsp
+        sudo apt-get install libgstrtspserver-1.0-dev
+        sudo apt-get install libvdpau-dev vdpauinfo	
+        sudo apt-get install libvdpau-va-gl1
+
+
+# Running the code
 There are a total of 5 executables files, from de point_0 to point_5, each one of them has a different functionality. The parameters from Point 0 to Point 2_3 are the same, the only difference is the functionality of each one. And the parameters from Point 4 to Point 5 are the same.
+
+- In any case you must be placed in the root folder/build/bin in order to run the following commands
 
 For point_0, point_1 and point_2_3 the parameters are:
 
