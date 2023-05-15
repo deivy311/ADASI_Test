@@ -3,7 +3,7 @@
 Point 0
 
 The inputs parameters are:
-Source type: Defines if we want to stream the camera or a file, by default is videotestsrc there are only two posible options: 
+Source type: Defines if we want to stream the camera or a file, by default is autovideosrc there are only two posible options: 
 
     videotestsrc or autovideosrc
 

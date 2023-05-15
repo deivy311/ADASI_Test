@@ -138,7 +138,7 @@ GstElement *pipeline_manager::setup_gst_pipeline(std::string source_type, std::s
 
   /* Create pipeline and elements */
   pipeline = gst_pipeline_new("mypipeline");
-  src = gst_element_factory_make("videotestsrc", "autovideosrc");          // Creates element for video capture from a device
+  src = gst_element_factory_make(source_type.c_str(), "autovideosrc");          // Creates element for video capture from a device
   adaptor1 = gst_element_factory_make("videoconvert", "adaptor1");         // Converts between various video formats
   videoconvert = gst_element_factory_make("videoconvert", "videoconvert"); // Converts between various video formats
   videoscale = gst_element_factory_make("videoscale", "videoscale");       // Scales the video frame
