@@ -168,6 +168,7 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   /* Create pipeline and elements */
   pipeline = gst_pipeline_new("mypipeline");
   src = gst_element_factory_make(source_type.c_str(), "autovideosrc");     // Creates element for video capture from a device
+  tee = gst_element_factory_make("tee", "tee");                            // Splits a single source into multiple outputs
   adaptor1 = gst_element_factory_make("videoconvert", "adaptor1");         // Converts between various video formats
   overlay = gst_element_factory_make("cairooverlay", "myoverlay");         // Adds cairo drawing on top of the video
   videoconvert = gst_element_factory_make("videoconvert", "videoconvert"); // Converts between various video formats
@@ -178,7 +179,13 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   gst_caps_unref(caps);
   encoder = gst_element_factory_make("x264enc", "x264enc");          // Compresses video with the x264 codec
   muxer = gst_element_factory_make("matroskamux", "matroskamux");    // Muxes different streams of data into a Matroska file format
+    filesink = gst_element_factory_make("filesink", "filesink");
+  g_object_set(filesink, "location", "camera_record.mp4", NULL);
+  file_queue = gst_element_factory_make("queue", "file_queue");
   sink = gst_element_factory_make("tcpserversink", "tcpserversink"); // Sends video data to the client over TCP
+  video_queue = gst_element_factory_make("queue", "video_queue");
+
+  
   RTSP_manager *rtsp_server_manager = new RTSP_manager();
   overlay_manager *local_overlay_manager = new overlay_manager();
   // RTSP_manager* rtsp_server_manager = new RTSP_manager(server, mounts, factory,DEFAULT_RTSP_HOST,DEFAULT_RTSP_PORT,DEFAULT_FILE_PATH);
