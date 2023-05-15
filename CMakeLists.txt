@@ -15,7 +15,5 @@ add_subdirectory(point_0)
 add_subdirectory(point_1)
 add_subdirectory(point_2_3)
 add_subdirectory(point_4)
-# add_subdirectory(point_5)
-#add_subdirectory(point_0)
-# add_subdirectory(vulkan_projects)
+add_subdirectory(point_5)
 
