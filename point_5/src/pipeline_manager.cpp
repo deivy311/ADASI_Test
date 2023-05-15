@@ -218,7 +218,7 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   g_object_set(G_OBJECT(sink), "port", port, NULL);
 
   // Add elements to the pipeline
-  gst_bin_add_many(GST_BIN(pipeline), src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, video_queue, sink, file_queue, filesink, NULL);
+  gst_bin_add_many(GST_BIN(pipeline), src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, video_queue, sink, NULL);//file_queue, filesink, NULL);
   // gst_element_link_many(src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, NULL);
   if (!gst_element_link_many(src, videoconvert, videoscale, capsfilter, encoder, muxer, tee, NULL))
   {
@@ -228,10 +228,10 @@ GstElement *pipeline_manager::setup_gst_pipeline(CairoOverlayState *overlay_stat
   {
     g_warning("Failed to encoder link element with streamer sink ");
   }
-  if (!gst_element_link_many(file_queue, filesink, NULL))
-  {
-    g_warning("Failed to encoder link element with file sink ");
-  }
+  // if (!gst_element_link_many(file_queue, filesink, NULL))
+  // {
+  //   g_warning("Failed to encoder link element with file sink ");
+  // }
 
 
   // Connect the "draw" signal to the "overlay" element with the "draw_overlay" callback function and the "overlay_state" data
