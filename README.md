@@ -42,7 +42,7 @@ And in addition, run the following commands:
 
 Clone the repository using the next link: 
 
-    https://github.com/deivy311/ADASI_Test
+    https://github.com/deivy311/Test
 
 **If you don’t have the repository, you can download the zip file, attached to the email named ADASI_test_just_code.zip and unzip it.**
 
