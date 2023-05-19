@@ -182,7 +182,9 @@ The video related to this is in the Folder Results, named ***point_4_RTSP_dinami
             
 The VLC command to see the results is:
 
-    rtsp://192.168.1.6:5001/test  # this is the ip of the same computer but viewed from
+    rtsp://192.168.1.6:5001/test
+
+In this case, 192.168.1.6 is the Ip from, viewed from a host of the same network.
 
 The Executable **point_5**, can show the results for the literal 5, it is a RTSP pipeline over RTP where can stream a video file or a camera with dynamic overlay and output the video in H264. An as additional feature the video streamed is stored.
 
@@ -197,7 +199,7 @@ The video related to this is in the Folder Results, named ***point_4_RTP_dinamic
 The VLC command to see the results is:
 
     tcp://127.0.0.1:5002
-    rtsp://127.0.0.1:5001/test another
+    rtsp://127.0.0.1:5001/test
 
 The video related to this is in the Folder Results, named ***point_5_RTSP_RTP_dinamic_overlay_camera.mp4*** which means it streams a camera video with dynamic overlay and output the video in H264 format.
   
