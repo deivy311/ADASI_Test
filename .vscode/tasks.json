@@ -1,0 +1,275 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "configure",
+            "type": "shell",
+            "command": "/usr/bin/cmake",
+            "args": [
+                "-S",
+                "${workspaceFolder}",
+                "-B",
+                "${workspaceFolder}/build",
+                "-DCMAKE_BUILD_TYPE=Debug"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "CMake configuration task"
+        },
+        {
+            "label": "configureLinux",
+            "type": "shell",
+            "command": "/usr/bin/cmake",
+            "args": [
+                "-S",
+                "${workspaceFolder}",
+                "-B",
+                "${workspaceFolder}/build",
+                "-DCMAKE_BUILD_TYPE=Debug",
+                "-DOpenCV_DIR=/home/colibri/Repos/colibri/colibri/dependencies/opencv/build3"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "CMake configuration task"
+        },
+        {
+            "label": "configureWindows",
+            "type": "shell",
+            "command": "C:\\Program Files\\CMake\\bin\\cmake.EXE",
+            "args": [
+                "-S",
+                "${workspaceFolder}",
+                "-B",
+                "${workspaceFolder}/build",
+                "-DCMAKE_BUILD_TYPE=Debug",
+                "-DOpenCV_DIR=${workspaceFolder}/colibri/dependencies/opencv/build3"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "CMake configuration task"
+        },
+        {
+            "label": "CMake: linuxBuild",
+            "type": "shell",
+            "command": "/usr/bin/cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build",
+                "--config",
+                "Debug",
+                "--target",
+                "all",
+                "--",
+                "-j",
+                "4"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "CMake build task"
+        },
+        {
+            "label": "CMake: linuxRelease",
+            "type": "shell",
+            "command": "/usr/bin/cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build",
+                "--config",
+                "Release",
+                "--target",
+                "all",
+                "--",
+                "-j",
+                "4"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "CMake release task"
+        },
+        {
+            "label": "CMake: windowsBuild",
+            "type": "shell",
+            "command": "C:\\Program Files\\CMake\\bin\\cmake.EXE",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build",
+                "--config",
+                "Debug",
+                "--target",
+                "ALL_BUILD",
+                "-j",
+                "10"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "CMake build task"
+        },
+        {
+            "label": "CMake: windowsRelease",
+            "type": "shell",
+            "command": "C:\\Program Files\\CMake\\bin\\cmake.EXE",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build",
+                "--config",
+                "Release",
+                "--target",
+                "ALL_BUILD",
+                "-j",
+                "10"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "CMake release task"
+        },
+        {
+            "label": "cpplint",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-c",
+                "find ${workspaceFolder} -name 'External' -prune -o \\( -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \\) -print | xargs cpplint --filter=-whitespace/comments --linelength=120"
+            ],
+            "group": "none",
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": ["relative", "${workspaceFolder}"],
+                "pattern": {
+                    "regexp": "^(.+):(\\d+):\\s*(\\d+)?\\s*(\\[.+\\])?\\s*(.+)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "message": 5
+                }
+            },
+            "detail": "Run cpplint to enforce coding standards"
+        },
+        {
+            "label": "buildWithLint",
+            "type": "shell",
+            "dependsOn": ["cpplint", "CMake: linuxBuild"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "buildWithLintRelease",
+            "type": "shell",
+            "dependsOn": ["cpplint", "CMake: linuxRelease"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "buildWithLintWindows",
+            "type": "shell",
+            "dependsOn": ["cpplint", "CMake: windowsBuild"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "buildWithLintWindowsRelease",
+            "type": "shell",
+            "dependsOn": ["cpplint", "CMake: windowsRelease"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "generateDocs",
+            "type": "shell",
+            "command": "/usr/bin/cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build",
+                "--target",
+                "doc_doxygen"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Generate Doxygen documentation"
+        },
+        {
+            "label": "buildWithDocs",
+            "type": "shell",
+            "dependsOn": ["CMake: linuxBuild"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },        {
+            "label": "GenerateDocs",
+            "type": "shell",
+            "dependsOn": ["generateDocs"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "buildWithDocsAndLintRelease",
+            "type": "shell",
+            "dependsOn": ["cpplint", "CMake: linuxRelease", "generateDocs"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "buildWithDocsAndLintWindows",
+            "type": "shell",
+            "dependsOn": ["cpplint", "CMake: windowsBuild", "generateDocs"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "buildWithDocsAndLintWindowsRelease",
+            "type": "shell",
+            "dependsOn": ["cpplint", "CMake: windowsRelease", "generateDocs"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}

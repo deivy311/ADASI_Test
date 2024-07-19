@@ -1,0 +1,88 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Debug Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/point_6", //Implemented new architecture
+            "args": [
+                "--d=16",
+                "--id=16",
+                "--l=0.144",
+                "--c=udp",
+                "--v=/dev/video0"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/bin/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": false
+                }
+            ],
+            "preLaunchTask":"buildWithDocs"// "buildWithDocs"//CMake: linuxBuild"
+        },
+        {
+            "name": "(gdb) Release Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/Release/ColibriExample2",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/bin/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": false
+                }
+            ],
+            "preLaunchTask": "buildWithLintRelease"
+        },
+        {
+            "name": "(Windows) Debug Launch",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/Debug/Example1.exe",
+            "args": ["-R", "4K/"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/bin/",
+            "environment": [],
+            "console": "integratedTerminal",
+            "preLaunchTask": "buildWithLintWindows"
+        },
+        {
+            "name": "(Windows) Release Launch",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/Release/ColibriExample1.exe",
+            "args": ["-R", "4K/"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/bin/",
+            "environment": [],
+            "console": "integratedTerminal",
+            "preLaunchTask": "buildWithLintWindowsRelease"
+        },
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}\\Python\\mainColibri.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
