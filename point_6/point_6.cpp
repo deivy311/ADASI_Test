@@ -68,7 +68,7 @@ media_configure(GstRTSPMediaFactory *factory, GstRTSPMedia *media, gpointer user
                                    "format", G_TYPE_STRING, "BGR",
                                    "width", G_TYPE_INT, 384,
                                    "height", G_TYPE_INT, 288,
-                                   "framerate", GST_TYPE_FRACTION, 10, 1, NULL),// verify the framerate
+                                   "framerate", GST_TYPE_FRACTION, 1, 1, NULL),// verify the framerate
                NULL);
 
   ctx = g_new0(MyContext, 1);
